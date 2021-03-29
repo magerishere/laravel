@@ -7,7 +7,7 @@
 @if (session()->has('error'))
     <div class="alert alert-danger text-center">
         {{ session('error') }}
-        <a href="{{ route(session('restoreUrl'),session('restore_id')) }}"><button class="btn btn-warning">Restore !</button></a>
+        {{-- <a href="{{ route(session('restoreUrl'),session('restore_id')) }}"><button class="btn btn-warning">Restore !</button></a> --}}
     </div>
     
 @endif

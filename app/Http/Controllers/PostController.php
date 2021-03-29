@@ -58,7 +58,6 @@ class PostController extends Controller
         return redirect()
         ->route('post.index')
         ->with(['message'=>"Post has been created. #$post->id",'post_id'=>$post->id]);
-
     }
 
     /**
@@ -80,7 +79,6 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-       
         $categories = Category::all();
         return view('admin.post.edit',compact('post','categories'));
     }
@@ -94,7 +92,6 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-     
         $post->update($request->only('title','description'));
         DB::table('category_post')
             ->where('post_id',$post->id)
@@ -140,7 +137,6 @@ class PostController extends Controller
 
     public function multiDelete(Request $request)
     {
-       
         foreach($request->input('ids') as $id)
         {
             $post = Post::find($id);

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 /*  Group routes   */
 Route::middleware('auth:admin')->group(function() {
 
@@ -25,10 +26,13 @@ Route::middleware('auth:admin')->group(function() {
     Route::resource('/post',PostController::class);
     Route::resource('/category',CategoryController::class);
 
-    /*  Get routes   */
+     /*  Get routes   */
     Route::get('/post/restore/trash/{id}',[PostController::class,'restore'])->name('post.restore');
     Route::post('/post/multidelete',[PostController::class,'multiDelete'])->name('post.multiDelete');
     Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
+    Route::get('/dashboard',function(){
+        return view('admin.index');
+    })->name('admin.dashboard');
 });
 
 /*  Post routes   */
