@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
 {
@@ -38,7 +39,7 @@ class CategoryController extends Controller
     {
        $category = Category::create($request->all());
         return back()
-            ->with(['message'=>"Category has been created. #$category->id",'category_id'=>$category->id]);
+            ->with(['message'=>"دسته بندی ایجاد شد. #$category->id",'category_id'=>$category->id]);
     }
 
     /**
@@ -50,6 +51,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         //
+       
     }
 
     /**
@@ -75,7 +77,7 @@ class CategoryController extends Controller
         $category->update($request->all());
 
         return back()
-            ->with(['message'=>"Category has been updated. #$category->id",'category_id'=>$category->id]);
+            ->with(['message'=>"دسته بندی ویرایش شد. #$category->id",'category_id'=>$category->id]);
     }
 
     /**
@@ -88,13 +90,25 @@ class CategoryController extends Controller
     {
         $category->delete();
         return back()
-            ->with(['error'=>'Category has been deleted!','restoreUrl'=>'category.restore','restore_id'=>$category->id]); /* Session error for set background danger! */
+            ->with(['error'=>'دسته بندی حذف شد!','restoreUrl'=>'category.restore','restore_id'=>$category->id]); /* Session error for set background danger! */
     }
 
+    /* Restore the specified resource from storage. */
     public function restore($id)
     {
         Category::withTrashed()->where('id',$id)->restore();
         return back()
-            ->with('message',"Category has been updated. #$id");
+            ->with(['message'=>"دسته بندی بازگردانی شد. #$id",'category_id'=>$id]);
+    }
+
+    /* Remove all selected resource from storage. */
+    public function multiDelete(Request $request)
+    {
+        foreach($request->input('ids') as $id)
+        {
+            $category = Category::find($id);
+            $category->delete();
+        }
+        Session::flash('error','موارد انتخاب شده حذف شدند!'); /* Session error for set background red! */
     }
 }

@@ -13,10 +13,10 @@
                 <div class="card-body row">
                    
                     @if ($posts->count() == 0 && !session()->has('restoreUrl') && !session()->has('restoresUrl'))
-                        <h1 class="text-center">هیچ مطلبی وجود ندارد <a href="{{ route('post.create') }}" class="btn btn-primary">ایجاد مطلب</a></h1> 
+                        <h1 class="text-center">زباله دان خالی است! <a href="{{ route('post.index') }}" class="btn btn-primary">بازگشت</a></h1> 
                     @else 
                     <div class="col-md-3">
-                        <h4 class="card-title">جدول مطالب  <a href="{{ route('post.create') }}" class="btn btn-primary">ایجاد مطلب</a></h4>
+                        <h4 class="card-title">جدول زباله دان مطالب  <a href="{{ route('post.index') }}" class="btn btn-primary">بازگشت</a></h4>
                     </div>
                     <div class="col-md-7">
                         @include('messages')
@@ -27,7 +27,7 @@
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered border-primary mb-0">
+                        <table class="table table-hover table-danger table-bordered border-primary mb-0">
 
                             <thead>
                                 <tr>
@@ -35,11 +35,9 @@
                                     <th class="text-center">#</th>
                                     <th class="text-center">عنوان</th>
                                     <th class="text-center">عکس</th>
-                           
                                     <th class="text-center">محتوا</th>
-                                    <th class="text-center">تاریخ ایجاد</th>
-                                    <th class="text-center">تاریخ بروزرسانی</th>
-                                    <th class="text-center">ویرایش</th>
+                                    <th class="text-center">تاریخ حذف</th>
+                                    <th class="text-center">بازگردانی</th>
                                     <th class="text-center">حذف</th>
                                 </tr>
                             </thead>
@@ -49,13 +47,13 @@
                                         <td class="align-middle"><input type="checkbox" name="checkBox[]" value="{{ $post->id }}" onclick="checkBoxHandler({{ $post->id }})" ></th>
                                         <th scope="row" class="align-middle">{{ $post->id }}</th>
                                         <td class="align-middle">{{ Str::limit($post->title,13) }}</td>
-                                        <td class="align-middle"><a href="{{ route('post.show',$post->id) }}"><img width="70px" src="{{ $post->image ? $post->image->url : 'storage/images/laravel.jfif' }}" alt=""></a></td>
+                                        <td class="align-middle"><a href="{{ route('post.show',$post->id) }}"><img width="70px" src="{{ $post->image ? $post->image->url : '/storage/images/laravel.jfif' }}" alt=""></a></td>
                                         
                                         <td class="align-middle">{!! Str::limit($post->description,50) !!}</td> 
-                                        <td class="align-middle">{{ $post->created_at->diffForHumans() }}</td>
-                                        <td class="align-middle">{{ $post->updated_at->diffForHumans() }}</td>
-                                        <td class="align-middle"><a href="{{ route('post.edit',$post->id) }}" class="btn btn-primary">ویرایش</a></td>
-                                        <td class="align-middle"><form action="{{ route('post.destroy',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger">حذف</button></form></td>
+                                        <td class="align-middle">{{ $post->deleted_at ? $post->deleted_at->diffForHumans() : '' }}</td>
+                                        
+                                        <td class="align-middle"><a href="{{ route('post.edit',$post->id) }}" class="btn btn-warning">بازگردانی</a></td>
+                                        <td class="align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger">حذف</button></form></td>
                                     </tr>
                                 @endforeach
                               

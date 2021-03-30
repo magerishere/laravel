@@ -39,8 +39,9 @@
                   </div>
                   <div class="flex-1 overflow-hidden">
                       <h5 class="font-size-16 mb-1">مشخصات نویسنده</h5>
-                      <p class="text-muted text-truncate mb-0">Fill all information below</p>
-                  </div>
+                      <p class="text-muted text-truncate mb-0">{{ auth()->user()->name }}</p>
+                    </div>
+                    @include('messages')
                   <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
               </div>
 
@@ -54,7 +55,7 @@
                 @csrf
                   <div class="mb-3">
                       <label class="form-label" for="productname">عنوان مطلب</label>
-                      <input id="productname" name="title" type="text" class="form-control">
+                      <input id="productname" name="title" value="{{ old('title') }}" type="text" class="form-control">
                   </div>
                  
                   <div class="row">
@@ -75,12 +76,17 @@
                               <label class='form-label'>عکس مطلب</label>
                               <input name="url" type="file" class="form-control">
                             </div>
+                
                         </div>
                     </div>
 
                   <div class="mb-3">
                       <label class="form-label" for="productdesc">توضیحات مطلب</label>
-                      <textarea name="description" class="form-control" id="productdesc" rows="4"></textarea>
+    
+                      <textarea name="description" id="editor">
+                      {{ old('description') }}
+                    </textarea>
+                     
                   </div>
                   <div class="row mb-4">
                     <div class="col text-end">
@@ -98,4 +104,17 @@
 </div>
   </div> <!-- content -->
 </div>
+@endsection
+
+@section('footer')
+<script>
+ ClassicEditor
+            .create( document.querySelector( '#editor' ), {
+              language: 'fa'
+            } )
+            .catch( error => {
+                console.error( error );
+            } );
+</script>
+
 @endsection

@@ -42,6 +42,7 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+      
        $post = Post::create($request->only('title','description'));
         DB::table('category_post')
         ->insert(['post_id'=>$post->id,'category_id'=>$request->input('name')]);
@@ -57,7 +58,7 @@ class PostController extends Controller
         }
         return redirect()
         ->route('post.index')
-        ->with(['message'=>"Post has been created. #$post->id",'post_id'=>$post->id]);
+        ->with(['message'=>"مطلب ایجاد شد. #$post->id",'post_id'=>$post->id]);
     }
 
     /**
@@ -68,7 +69,8 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        
+        return view('admin.post.show',compact('post'));
+       
     }
 
     /**
@@ -90,7 +92,7 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
         $post->update($request->only('title','description'));
         DB::table('category_post')
@@ -109,7 +111,7 @@ class PostController extends Controller
         }
         return redirect()
             ->route('post.index')
-            ->with(['message'=>"Post has been updated. #$post->id",'post_id'=>$post->id]);
+            ->with(['message'=>"مطلب ویرایش شد. #$post->id",'post_id'=>$post->id]);
     }
 
     /**
@@ -122,27 +124,48 @@ class PostController extends Controller
     {
         $post->delete();
         return back()
-            ->with(['error'=>'Post has been deleted.','restoreUrl'=>'post.restore','restore_id'=>$post->id]); /* Session error for set background danger! */
+            ->with(['error'=>'مطلب حذف شد.','restoreUrl'=>'post.restore','restore_id'=>$post->id]); /* Session error for set background danger! */
     }
 
+     /* Remove all selected resource from storage. */
+     public function multiDelete(Request $request)
+     {
+    
+         foreach($request->ids as $id)
+         {
+             $post = Post::find($id);
+             $post->delete();
+         }
 
+         Session::flash('error','مطالب انتخاب شده حذف شدند!'); /* Session error for set background red! */     
+    }
 
     /* Restore the specified resource from storage. */
     public function restore($id)
     {
         Post::withTrashed()->where('id',$id)->restore();
         return back()
-            ->with('message',"Post has been restored. #$id");
+            ->with(['message'=>"مطلب بازگردانی شد. #$id",'post_id'=>$id]);
     }
 
-    public function multiDelete(Request $request)
+    /* Trash for all soft delete resource from storage. */
+    public function trash()
     {
-        foreach($request->input('ids') as $id)
-        {
-            $post = Post::find($id);
-            $post->delete();
-        }
-
-        return response()->json(['status'=>200]);
+        $posts = Post::withTrashed()->get();
+        return view('admin.post.trash',compact('posts'));
     }
+
+    /* Force delete single resource from storage. */
+    public function trashDelete($id)
+    {
+        $post = Post::withTrashed($id)->first();
+        $post->forceDelete();
+        return back()
+            ->with('error','مطلب حذف شد!');
+    }
+
+
+
+
+   
 }

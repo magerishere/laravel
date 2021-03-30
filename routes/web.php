@@ -26,13 +26,23 @@ Route::middleware('auth:admin')->group(function() {
     Route::resource('/post',PostController::class);
     Route::resource('/category',CategoryController::class);
 
-     /*  Get routes   */
-    Route::get('/post/restore/trash/{id}',[PostController::class,'restore'])->name('post.restore');
+    /*  Post routes   */
     Route::post('/post/multidelete',[PostController::class,'multiDelete'])->name('post.multiDelete');
+    Route::post('/category/multidelete',[CategoryController::class,'multiDelete'])->name('category.multiDelete');
+
+    /*  Delete routes   */
+    Route::delete('/post/all/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
+
+    /*  Get routes   */
+    Route::get('/post/restore/trash/{id}',[PostController::class,'restore'])->name('post.restore');
     Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
+    Route::get('/post/all/trash',[PostController::class,'trash'])->name('post.trash');
     Route::get('/dashboard',function(){
         return view('admin.index');
     })->name('admin.dashboard');
+
+
+    
 });
 
 /*  Post routes   */

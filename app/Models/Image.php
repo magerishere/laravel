@@ -22,7 +22,7 @@ class Image extends Model
 
     public function getUrlAttribute($url)
     {
-        return 'storage/images/' . $url;
+        return '/storage/images/' . $url;
     }
 
 }

@@ -30,4 +30,14 @@ class PostRequest extends FormRequest
             'description'=>'required|min:20',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'title.required'=>'عنوان مطلب',
+            'name.required'=> 'دسته بندی',
+            'url.mimes'=> 'عکس فقط با فرمت jpg,png,jpeg',
+            'description.required' => 'توضیحات مطلب'
+        ];
+    }
 }

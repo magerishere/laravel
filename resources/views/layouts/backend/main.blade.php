@@ -9,6 +9,7 @@
       name="description"
     />
     <meta content="Themesbrand" name="author" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
     <!-- Bootstrap Css -->
@@ -21,9 +22,11 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.rtl.css') }}" rel="stylesheet" type="text/css" />
+
   </head>
 
   <body>
+
     <!-- Loader -->
     <div id="preloader">
       <div id="status">
@@ -800,6 +803,8 @@
       <!-- Start right Content here -->
       <!-- ============================================================== -->
       <div class="main-content">
+
+
         @yield('content')
         <!-- End Page-content -->
         <footer class="footer">
@@ -930,5 +935,9 @@
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
+    <script src="{{ asset('js/ckeditor.js') }}"></script>
+    <script src="{{ asset('js/fa.js') }}"></script>
+
+    @yield('footer')
   </body>
 </html>
