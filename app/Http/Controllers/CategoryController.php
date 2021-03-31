@@ -111,4 +111,10 @@ class CategoryController extends Controller
         }
         Session::flash('error','موارد انتخاب شده حذف شدند!'); /* Session error for set background red! */
     }
+
+    public function trash()
+    {
+        $categories = Category::onlyTrashed()->get();
+        return view('admin.category.trash',compact('categories'));
+    }
 }

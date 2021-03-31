@@ -12,18 +12,19 @@
             <div class="card">
                 <div class="card-body row">
                    
-                    @if ($posts->count() == 0 && !session()->has('restoreUrl') && !session()->has('restoresUrl'))
-                        <h1 class="text-center">زباله دان خالی است! <a href="{{ route('post.index') }}" class="btn btn-primary">بازگشت</a></h1> 
+                    @if ($posts->count() == 0)
+                        <h1 class="text-center">زباله دان مطالب خالیست! <a href="{{ route('post.index') }}" class="btn btn-primary">بازگشت به صفحه مطالب</a></h1> 
                     @else 
-                    <div class="col-md-3">
-                        <h4 class="card-title">جدول زباله دان مطالب  <a href="{{ route('post.index') }}" class="btn btn-primary">بازگشت</a></h4>
+                    <div class="col-md-4">
+                        <h4 class="card-title"> زباله دان مطالب <a href="{{ route('post.index') }}" class="btn btn-primary">بازگشت به صفحه مطالب</a></h4>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-4">
                         @include('messages')
                         <div id="multiDeleteMessage" class="alert alert-danger text-center"  style="display: none"> مشکلی پیش آمد! دوباره تلاش کنید</div>
                     </div>
-                    <div class="col-md-2 mb-3">
-                            <button type="button" onclick="deleteAllSelector()" id="deleteAllSelectorBtn" class="btn btn-danger" disabled>حذف انتخاب شده ها</button>
+                    <div class="col-md-4 mb-3">
+                        <button type="button" class="btn btn-warning" onclick="restoreAllSelector()" id="restoreAllSelectorBtn" disabled>بازگردانی انتخاب شده ها</button>
+                        <button type="button" onclick="deleteAllSelector()" id="deleteAllSelectorBtn" class="btn btn-danger" disabled>حذف انتخاب شده ها</button>
                     </div>
                     
                     <div class="table-responsive">
@@ -50,9 +51,9 @@
                                         <td class="align-middle"><a href="{{ route('post.show',$post->id) }}"><img width="70px" src="{{ $post->image ? $post->image->url : '/storage/images/laravel.jfif' }}" alt=""></a></td>
                                         
                                         <td class="align-middle">{!! Str::limit($post->description,50) !!}</td> 
-                                        <td class="align-middle">{{ $post->deleted_at ? $post->deleted_at->diffForHumans() : '' }}</td>
+                                        <td class="align-middle">{{ $post->deleted_at->diffForHumans() }}</td>
                                         
-                                        <td class="align-middle"><a href="{{ route('post.edit',$post->id) }}" class="btn btn-warning">بازگردانی</a></td>
+                                        <td class="align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning">بازگردانی</a></td>
                                         <td class="align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger">حذف</button></form></td>
                                     </tr>
                                 @endforeach
@@ -84,8 +85,10 @@
             }
             if(ids.length > 0) {
                 document.getElementById('deleteAllSelectorBtn').disabled = false;
+                document.getElementById('restoreAllSelectorBtn').disabled = false;
             } else { 
                 document.getElementById('deleteAllSelectorBtn').disabled = true;
+                document.getElementById('restoreAllSelectorBtn').disabled = true;
             }
        
         }
@@ -93,7 +96,6 @@
         const checkBoxAll = () => {
             let inp = document.getElementsByName('checkBox[]');
             ids = [];
-            
                 for(let i = 0;i < inp.length;i++) {
                     if(document.getElementById('checkBoxAll').checked) {
                         inp[i].checked = true;
@@ -105,13 +107,14 @@
             } 
             if(ids.length > 0) {
                 document.getElementById('deleteAllSelectorBtn').disabled = false;
+                document.getElementById('restoreAllSelectorBtn').disabled = false;
             } else { 
                 document.getElementById('deleteAllSelectorBtn').disabled = true;
+                document.getElementById('restoreAllSelectorBtn').disabled = true;
             }
         }
 
         const deleteAllSelector = () => {
-            
             $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -119,22 +122,70 @@
                 });
                 if(ids.length > 0) 
                 {
-
-                    $.ajax({
-                        url: '/post/multidelete',
-                        type: 'POST',
-                        data: {ids},
-                        success:function(res) {
-                            // location.reload();
-                            console.log(res);
-                        },
-                        error:function(e) {
-                            document.getElementById('multiDeleteMessage').style.display = 'block';
-                            console.log(e);
+                    Swal.fire({
+                    title: 'بعد از حذف شما قادر به بازگرداندن نیستید!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#808080',
+                    confirmButtonText: 'حذف موارد انتخاب شده',
+                    cancelButtonText: 'انصراف',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/post/multiforcedelete',
+                                type: 'POST',
+                                data: {ids},
+                                success:function(res) {
+                                    location.reload();  
+                                },
+                                error:function(e) {
+                                    document.getElementById('multiDeleteMessage').style.display = 'block';
+                                    console.log(e);
+                                }
+                            });
                         }
                     });
+
                 }
             }
+
+            const restoreAllSelector = () => {
+            $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                if(ids.length > 0) 
+                {
+                    Swal.fire({
+                    title: 'بازگردانی موارد انتخاب شده!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#cd9941',
+                    cancelButtonColor: '#808080',
+                    confirmButtonText: 'بازگردانی کن!',
+                    cancelButtonText: 'انصراف',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/post/multirestore',
+                                type: 'POST',
+                                data: {ids},
+                                success:function(res) {
+                                    location.reload();  
+                                },
+                                error:function(e) {
+                                    document.getElementById('multiDeleteMessage').style.display = 'block';
+                                    console.log(e);
+                                }
+                            });
+                        }
+                    });
+                   
+                }
+            }
+
         
         
     </script>

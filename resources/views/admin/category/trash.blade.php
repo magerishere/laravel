@@ -6,34 +6,37 @@
 <div class="page-content">
     <!-- Start content -->
     <div class="container-fluid">
+        @if ($categories->count() == 0)
+            <h1>زباله دان دسته بندی خالیست <a href="{{ route('category.index') }}">بازگشت به صفحه دسته بندی</a></h1>
+        @else
         <div class="row">
-
-        
-        <div class="col-lg-6">
+        <div class="col-md-12">
             <div class="card">
-                <div class="card-body row">
+                <div class="card-body row">    
                     <div class="col-md-4">
                         <br>
-                        <h4 class="card-title">جدول دسته بندی ها</h4>
+                        <h4 class="card-title">زباله دان دسته بندی ها</h4>
                         
                     </div>
-                    <div class="col-md-8">
-                        <button id="deleteAllSelectorBtn" onclick="deleteAllSelector()" class="btn btn-danger mb-3 float-end" style="display: none">حذف انتخاب شده ها</button>
-                        <div id="multiDeleteMessage" class="alert alert-danger"  style="display: none">خطا! دوباره تلاش کنید</div>
-
+                    <div class="col-md-4">
+                        <div id="multiDeleteMessage" class="alert alert-danger text-center"  style="display: none">خطا! دوباره تلاش کنید</div>
                         @include('messages')
+                    </div>
+                    <div class="col-md-4">
+                        <button id="restoreAllSelectorBtn" onclick="restoreAllSelector()" class="btn btn-warning mb-3" disabled>بازگردانی انتخاب شده ها</button>
+                        <button id="deleteAllSelectorBtn" onclick="deleteAllSelector()" class="btn btn-danger mb-3" disabled>حذف انتخاب شده ها</button>
                     </div>
                     
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered border-primary mb-0">
+                        <table class="table table-hover table-danger table-bordered border-primary mb-0">
 
                             <thead>
                                 <tr>
                                     <th><input type="checkbox" id="checkBoxAll" onclick="checkBoxAll()"></th>
                                     <th>#</th>
                                     <th>عنوان</th>
-                                    <th>تاریخ ایجاد</th>
-                                    <th>ویرایش</th>
+                                    <th>تاریخ حذف</th>
+                                    <th>بازگردانی</th>
                                     <th>حذف</th>
                                 </tr>
                             </thead>
@@ -43,8 +46,8 @@
                                         <th><input type="checkbox" value="{{ $category->id }}" name="checkBox[]" onclick="checkBoxHandler({{ $category->id }})" ></th>
                                         <th scope="row">{{ $category->id }}</th>
                                         <td>{{ $category->name }}</td>
-                                        <td>{{ $category->created_at->diffForHumans() }}</td>
-                                        <td><button type="button" class="btn btn-primary" onclick="editCategory({{ $category->id }},{{ json_encode($category->name) }})">ویرایش</button></td>
+                                        <td>{{ $category->deleted_at->diffForHumans() }}</td>
+                                        <td><button type="button" class="btn btn-warning" onclick="editCategory({{ $category->id }},{{ json_encode($category->name) }})">بازگردانی</button></td>
                                         <td> <form action="{{ route('category.destroy',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger">حذف</button> </form></td>
                                     </tr>
                                 @endforeach
@@ -52,32 +55,12 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
             </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-body">
-                   
-                    <h4 class="card-title">ایجاد دسته بندی</h4>
-                    <div class="table-responsive">
-                        <form action="{{ route('category.store') }}" method="POST" class="d-flex">
-                            @csrf
-                            <div class="form-group col-md-6">
-                                <input type="text" name="name" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary">ایجاد</button>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-            <br>
-            <div id="form-edit-category"></div>
-        </div>
-      
+        </div>    
     </div>
+    @endif
+
     </div>
 </div>
 @endsection
@@ -85,29 +68,6 @@
 
 @section('footer')
 <script>
-    const editCategory = (id,name) => {
-       
-        const editForm = `
-        <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">ویرایش دسته بندی</h4>
-                    <div class="table-responsive">
-                        <form action="{{   URL('/category/${id}')  }}" method="POST" class="d-flex">
-                            @csrf
-                            @method('PATCH')
-                            <div class="form-group col-md-6">
-                                <input type="text" name="name" value=${name} class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary">ویرایش</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        `;
-         $('#form-edit-category div').remove();           
-        $('#form-edit-category').append(editForm);
-    }
-
     let ids = [];
         const checkBoxHandler = (id) => {
             const index = ids.indexOf(String(id));
@@ -117,9 +77,11 @@
                 ids.push(String(id));
             }
             if(ids.length > 0) {
-                document.getElementById('deleteAllSelectorBtn').style.display = 'block';
+                document.getElementById('deleteAllSelectorBtn').disabled = false;
+                document.getElementById('restoreAllSelectorBtn').disabled = false;
             } else { 
-                document.getElementById('deleteAllSelectorBtn').style.display = 'none';
+                document.getElementById('deleteAllSelectorBtn').disabled = true;
+                document.getElementById('restoreAllSelectorBtn').disabled = true;
             }
        
         }
@@ -138,9 +100,11 @@
                     }
             } 
             if(ids.length > 0) {
-                document.getElementById('deleteAllSelectorBtn').style.display = 'block';
+                document.getElementById('deleteAllSelectorBtn').disabled = false;
+                document.getElementById('restoreAllSelectorBtn').disabled = false;
             } else { 
-                document.getElementById('deleteAllSelectorBtn').style.display = 'none';
+                document.getElementById('deleteAllSelectorBtn').disabled = true;
+                document.getElementById('restoreAllSelectorBtn').disabled = true;
             }
         }
 

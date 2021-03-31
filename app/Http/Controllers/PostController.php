@@ -19,7 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderByDesc('id')->get();
+        $posts = Post::orderByDesc('id')->paginate(10);
         return view('admin.post.index',compact('posts'));    
     }
 
@@ -143,29 +143,48 @@ class PostController extends Controller
     /* Restore the specified resource from storage. */
     public function restore($id)
     {
-        Post::withTrashed()->where('id',$id)->restore();
-        return back()
+        Post::onlyTrashed($id)->restore();
+        return redirect()
+            ->route('post.index')
             ->with(['message'=>"مطلب بازگردانی شد. #$id",'post_id'=>$id]);
+    }
+
+    public function multiRestore(Request $request)
+    {
+        foreach($request->ids as $id)
+        {
+            $post = Post::onlyTrashed($id)->first();
+            $post->restore();
+        }
+        Session::flash('message','مطالب انتخاب شده بازگردانی شدند!');
     }
 
     /* Trash for all soft delete resource from storage. */
     public function trash()
     {
-        $posts = Post::withTrashed()->get();
+        
+        $posts = Post::onlyTrashed()->get();
         return view('admin.post.trash',compact('posts'));
     }
 
     /* Force delete single resource from storage. */
     public function trashDelete($id)
     {
-        $post = Post::withTrashed($id)->first();
+        $post = Post::onlyTrashed($id)->first();
         $post->forceDelete();
         return back()
             ->with('error','مطلب حذف شد!');
     }
 
-
-
-
+    /* Force delete multi resource from storage. */
+    public function multiForceDelete(Request $request)
+    {
+        foreach($request->ids as $id)
+        {
+            $post = Post::onlyTrashed($id)->first();
+            $post->forceDelete();
+        }
+        Session::flash('error','مطالب انتخاب شده حذف شدند!'); 
+    }
    
 }

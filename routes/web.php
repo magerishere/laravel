@@ -28,15 +28,18 @@ Route::middleware('auth:admin')->group(function() {
 
     /*  Post routes   */
     Route::post('/post/multidelete',[PostController::class,'multiDelete'])->name('post.multiDelete');
+    Route::post('/post/multiforcedelete',[PostController::class,'multiForceDelete'])->name('post.multiForceDelete');
+    Route::post('/post/multirestore',[PostController::class,'multiRestore'])->name('post.multiRestore');
     Route::post('/category/multidelete',[CategoryController::class,'multiDelete'])->name('category.multiDelete');
-
+    
     /*  Delete routes   */
     Route::delete('/post/all/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
 
     /*  Get routes   */
     Route::get('/post/restore/trash/{id}',[PostController::class,'restore'])->name('post.restore');
-    Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
     Route::get('/post/all/trash',[PostController::class,'trash'])->name('post.trash');
+    Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
+    Route::get('/category/all/trash',[CategoryController::class,'trash'])->name('category.trash');
     Route::get('/dashboard',function(){
         return view('admin.index');
     })->name('admin.dashboard');
@@ -56,7 +59,5 @@ Route::get('/login/admin',function(){
     return view('admin.login');
 })->name('admin.login');
 Route::get('/logout/admin',[AdminController::class,'logout'])->name('admin.logout');
-
-
 
 

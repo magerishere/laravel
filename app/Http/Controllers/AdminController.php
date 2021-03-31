@@ -88,9 +88,9 @@ class AdminController extends Controller
         if(auth('admin')->attempt(['name'=>$request->name,'password'=>$request->password]))
         {
             $request->session()->regenerate();
-            return redirect()->route('post.index')->with('message','Login was successfuly');
+            return redirect()->route('post.index')->with('message','خوش آمدید!');
         }
-        return redirect()->back()->with('error','Username or Password was wrong!');  
+        return redirect()->back()->with('error','نام کاربری یا رمزعبور اشتباه است!');  
     }
 
     public function logout(Request $request)

@@ -62,6 +62,8 @@
                             </tbody>
                         </table>
                     </div>
+                    
+                    {{ $posts->links() }}
                     @endif
 
                 </div>
@@ -70,11 +72,13 @@
       
       
     </div>
+
     </div>
 </div>
 @endsection
 
 @section('footer')
+
     <script>
         let ids = [];
         const checkBoxHandler = (id) => {
@@ -121,18 +125,28 @@
                 });
                 if(ids.length > 0) 
                 {
-
-                    $.ajax({
-                        url: '/post/multidelete',
-                        type: 'POST',
-                        data: {ids},
-                        success:function(res) {
-                            // location.reload();
-                            console.log(res);
-                        },
-                        error:function(e) {
-                            document.getElementById('multiDeleteMessage').style.display = 'block';
-                            console.log(e);
+                    Swal.fire({
+                    title: 'موارد انتخاب شده پس از حذف به زباله دان انتقال داده میشوند!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#808080',
+                    confirmButtonText: 'انتقال به زباله دان!',
+                    cancelButtonText: 'انصراف',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/post/multidelete',
+                                type: 'POST',
+                                data: {ids},
+                                success:function(res) {
+                                    location.reload();
+                                },
+                                error:function(e) {
+                                    document.getElementById('multiDeleteMessage').style.display = 'block';
+                                    console.log(e);
+                                }
+                            });
                         }
                     });
                 }
