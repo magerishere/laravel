@@ -22,7 +22,9 @@
     <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
     <link href="{{ asset('assets/css/app.rtl.css') }}" rel="stylesheet" type="text/css" />
-
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    {{-- <link rel="stylesheet" href="{{ asset('css/font-awesome.css') }}"> --}}
+  
   </head>
 
   <body>
@@ -536,6 +538,7 @@
                 </a>
                 <ul class="sub-menu" aria-expanded="false">
                   <li><a href="{{ route('post.index') }}">نمایش همه</a></li>
+                  <li><a href="{{ route('post.create') }}">جدید</a></li>
                   <li><a href="{{ route('post.trash') }}">زباله دان</a></li>
                   <li><a href="ecommerce-orders">Orders</a></li>
                   <li><a href="ecommerce-customers">Customers</a></li>
@@ -553,6 +556,7 @@
                 </a>
                 <ul class="sub-menu" aria-expanded="false">
                   <li><a href="{{ route('category.index') }}">نمایش همه</a></li>
+                  <li><a href="{{ route('category.index') }}">جدید</a></li>
                   <li><a href="{{ route('category.trash') }}">زباله دان</a></li>
                   <li><a href="ecommerce-orders">Orders</a></li>
                   <li><a href="ecommerce-customers">Customers</a></li>

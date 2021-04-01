@@ -19,7 +19,23 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::orderByDesc('id')->paginate(10);
+        $value = 10;
+        $search = '';
+        /* Pagination handler */
+        if(isset($_GET['value']))
+        {
+            $value = $_GET['value'] > 100 ? 100 : $_GET['value'];
+        }
+
+        /* Search handler */
+        if(isset($_GET['search']))
+        {
+            $search = $_GET['search'];
+        }
+
+        $posts = Post::orderByDesc('id')->where('title','like','%' . $search . '%')->paginate($value);
+        $posts->withPath('/post?search=' . $search . '&value=' . $value); 
+        
         return view('admin.post.index',compact('posts'));    
     }
 
@@ -128,9 +144,8 @@ class PostController extends Controller
     }
 
      /* Remove all selected resource from storage. */
-     public function multiDelete(Request $request)
+     public function multiDestroy(Request $request)
      {
-    
          foreach($request->ids as $id)
          {
              $post = Post::find($id);
@@ -171,17 +186,25 @@ class PostController extends Controller
     public function trashDelete($id)
     {
         $post = Post::onlyTrashed($id)->first();
+        if($post->image)
+        {
+            unlink($post->image->url);
+        }
         $post->forceDelete();
         return back()
             ->with('error','مطلب حذف شد!');
     }
 
     /* Force delete multi resource from storage. */
-    public function multiForceDelete(Request $request)
+    public function multiTrashDelete(Request $request)
     {
         foreach($request->ids as $id)
         {
             $post = Post::onlyTrashed($id)->first();
+            if($post->image)
+            {
+                unlink($post->image->url);
+            }
             $post->forceDelete();
         }
         Session::flash('error','مطالب انتخاب شده حذف شدند!'); 

@@ -7,7 +7,6 @@
     <!-- Start content -->
     <div class="container-fluid">
         <div class="row">
-
         
         <div class="col-lg-6">
             <div class="card">
@@ -15,24 +14,18 @@
                     @if ($categories->count() == 0 && !session('restoreUrl'))
                         <div class="col-md-12">
                             <br>
-                            <h1 class="text-center">دسته بندی وجود ندارد</h1>
+                           
+                                <h5 class="text-center">برای دسته بندی <strong class="text-danger">{{ $category->name }} </strong> زیر مجموعه وجود ندارد</h5>
+                    
                         </div>
                     @else
                         
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="form-outline">
-                                <input type="search" id="search" class="form-control" placeholder="جستجو..." />  
-                            </div>
-                            <button type="button" onclick="searchHandler()" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
-                            </button>
-                         
-                        </div>
-                        <h4 class="card-title">جدول دسته بندی ها</h4>
+                    <div class="col-md-5">
+                      
+                        <h4 class="card-title text-">جدول زیرمجموعه <strong class="text-danger"> {{ $category->name }} </strong></h4>
                         
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-7">
                         <button id="multiDestroyBtn" onclick="multiDestroy()" class="btn btn-danger mb-3 float-end" style="display: none">حذف انتخاب شده ها</button>
                         <div id="multiDestroyMessage" class="alert alert-danger"  style="display: none">خطا! دوباره تلاش کنید</div>
 
@@ -48,27 +41,25 @@
                                     <th class="text-center align-middle">#</th>
                                     <th class="text-center align-middle">عنوان</th>
                                     <th class="text-center align-middle">تاریخ ایجاد</th>
-                                    <th class="text-center align-middle">مشاهده</th>
                                     <th class="text-center align-middle">ویرایش</th>
                                     <th class="text-center align-middle">حذف</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($categories as $category)
-                                    <tr class="{{ $category->id == session('category_id') ? 'alert-success' : '' }}">
-                                        <th><input type="checkbox" value="{{ $category->id }}" name="checkBox[]" onclick="checkBoxHandler({{ $category->id }})" ></th>
-                                        <th scope="row" class="text-center align-middle">{{ $category->id }}</th>
-                                        <td class="text-center align-middle"><i class="fas fa-star"></i>{{ $category->name }}</td>
-                                        <td class="text-center align-middle">{{ $category->created_at->diffForHumans() }}</td>
-                                        <td class="text-center align-middle"><a href="{{ route('category.show',$category->id) }}" class="btn btn-info"><i class="fas fa-eye"></i></a></td>
-                                        <td class="text-center align-middle"><button type="button" class="btn btn-primary" onclick="editCategory({{ $category->id }},{{ json_encode($category->name) }})"><i class="fas fa-edit"></i></button></td>
-                                        <td class="text-center align-middle"> <form action="{{ route('category.destroy',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fas fa-trash"></i></button> </form></td>
+                                @foreach ($categories as $child)
+                                    <tr class="{{ $child->id == session('category_id') ? 'alert-success' : '' }}">
+                                        <th><input type="checkbox" value="{{ $child->id }}" name="checkBox[]" onclick="checkBoxHandler({{ $child->id }})" ></th>
+                                        <th scope="row" class="text-center align-middle">{{ $child->id }}</th>
+                                        <td class="text-center align-middle">{{ $child->name }}</td>
+                                        <td class="text-center align-middle">{{ $child->created_at->diffForHumans() }}</td>
+                                        <td class="text-center align-middle"><button type="button" class="btn btn-primary" onclick="editCategory({{ $child->id }},{{ json_encode($child->name) }},{{ $category->id }})"><i class="fas fa-edit"></i></button></td>
+                                        <td class="text-center align-middle"> <form action="{{ route('category.destroy',$child->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fas fa-trash"></i></button> </form></td>
                                     </tr>
                                 @endforeach
                               
                             </tbody>
                         </table>
-                        {{ $categories->links() }}
+                
                     </div>
                     @endif
                 </div>
@@ -78,10 +69,11 @@
             <div class="card">
                 <div class="card-body">
                    
-                    <h4 class="card-title">ایجاد دسته بندی اصلی</h4>
+                    <h4 class="card-title">ایجاد زیرمجموعه</h4>
                     <div class="table-responsive">
                         <form action="{{ route('category.store') }}" method="POST" class="d-flex">
                             @csrf
+                            <input type="hidden" name="parent_id" id="parent_id" value="{{ $category->id }}">
                             <div class="form-group col-md-6">
                                 <input type="text" name="name" class="form-control" autofocus>
                             </div>
@@ -105,13 +97,7 @@
 <script>
     
     let ids = [];
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-
-    let value;
-    let search;
-
-    const editCategory = (id,name) => {
+    const editCategory = (id,name,parentId) => {
        
         const editForm = `
         <div class="card">
@@ -121,6 +107,7 @@
                         <form action="{{   URL('/category/${id}')  }}" method="POST" class="d-flex">
                             @csrf
                             @method('PATCH')
+                            <input type="hidden" name="parent_id" value=${parentId}  >
                             <div class="form-group col-md-6">
                                 <input type="text" name="name" value=${name} class="form-control">
                             </div>
@@ -205,38 +192,6 @@
                 }
             }
 
-            const numberOfPerPageHandler = () => {
-            value = document.getElementById('numberOfPerPage').value;
-            search = urlParams.get('search') ? urlParams.get('search') : '';
-            $.ajax({
-                url:'/post',
-                type:'get',
- 
-                success:function(res){
-                    window.location.href = `http://laravel.test/category?search=${search}&value=${value}`;
-                },error:function(e){
-                    document.getElementById('multiDestroyMessage').style.display = 'block';
-
-                },
-            });
-        }
-
-        const searchHandler = () => {
-            search = document.getElementById('search').value;
-            value = urlParams.get('value') ? urlParams.get('value') : 10;
-            $.ajax({
-                url:'/post',
-                type:'get',
-                success:function(res) {
-                    window.location.href = `http://laravel.test/category?search=${search}&value=${value}`;
-                },error:function(e){
-                    document.getElementById('multiDestroyMessage').style.display = 'block';
-
-                }
-
-            })
-   
-         
-        }
+      
   </script>
 @endsection

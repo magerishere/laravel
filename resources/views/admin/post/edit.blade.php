@@ -42,7 +42,7 @@
                       <p class="text-muted text-truncate mb-0">Fill all information below</p>
                     </div>
                     @include('messages')
-                    <img width="100px" src="{{ $post->image ? $post->image->url : '/storage/images/laravel.jfif' }}" alt="">
+                    <img width="100px" src="{{ $post->image ? '/' . $post->image->url : '/storage/images/laravel.jfif' }}" alt="">
                   <i class="mdi mdi-chevron-up accor-down-icon font-size-24"></i>
               </div>
 
@@ -65,13 +65,12 @@
                           <div class="mb-3">
                               <label class="form-label">دسته بندی</label>
                               <select name="name" class="form-select select2 select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                  <option value="{{ $post->category->first()->id }}">{{ $post->category->first()->name }}</option>
+                                <option value="{{ $post->category->first()->id }}">{{ $post->category->first()->name }}</option>
                                   @foreach ($categories as $category)
                                     @if ($category->id != $post->category->first()->id)
                                       <option value="{{ $category->id }}">{{ $category->name }}</option>  
                                     @endif
                                   @endforeach
-                               
                                 </select>
                             </div>
                         </div>

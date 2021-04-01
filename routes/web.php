@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-/*  Group routes   */
+/*  Group routes for middleware of admin   */
 Route::middleware('auth:admin')->group(function() {
 
     /*  Resource routes   */
@@ -27,13 +27,16 @@ Route::middleware('auth:admin')->group(function() {
     Route::resource('/category',CategoryController::class);
 
     /*  Post routes   */
-    Route::post('/post/multidelete',[PostController::class,'multiDelete'])->name('post.multiDelete');
-    Route::post('/post/multiforcedelete',[PostController::class,'multiForceDelete'])->name('post.multiForceDelete');
+    Route::post('/post/multidestroy',[PostController::class,'multiDestroy'])->name('post.multiDestroy');
+    Route::post('/post/multitrashdelete',[PostController::class,'multiTrashDelete'])->name('post.multiTrashDelete');
     Route::post('/post/multirestore',[PostController::class,'multiRestore'])->name('post.multiRestore');
-    Route::post('/category/multidelete',[CategoryController::class,'multiDelete'])->name('category.multiDelete');
-    
+    Route::post('/category/multidestroy',[CategoryController::class,'multiDestroy'])->name('category.multiDestroy');
+    Route::post('/category/multitrashdelete',[CategoryController::class,'multiTrashDelete'])->name('category.multiTrashDelete');
+    Route::post('/category/multirestore',[CategoryController::class,'multiRestore'])->name('category.multiRestore');
+
     /*  Delete routes   */
-    Route::delete('/post/all/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
+    Route::delete('/post/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
+    Route::delete('/category/trash/{id}',[CategoryController::class,'trashDelete'])->name('category.trashDelete');
 
     /*  Get routes   */
     Route::get('/post/restore/trash/{id}',[PostController::class,'restore'])->name('post.restore');
@@ -41,9 +44,11 @@ Route::middleware('auth:admin')->group(function() {
     Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
     Route::get('/category/all/trash',[CategoryController::class,'trash'])->name('category.trash');
     Route::get('/dashboard',function(){
-        return view('admin.index');
+        return view('admin.dashboard');
     })->name('admin.dashboard');
-
+    Route::get('/profile',function(){
+        return view('admin.profile');
+    })->name('admin.profile');
 
     
 });

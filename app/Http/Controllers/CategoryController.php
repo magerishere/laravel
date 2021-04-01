@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -15,7 +16,23 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
+        $value = 10;
+        $search = '';
+        /* Pagination handler */
+        if(isset($_GET['value']))
+        {
+            $value = $_GET['value'] > 100 ? 100 : $_GET['value'];
+        }
+
+        /* Search handler */
+        if(isset($_GET['search']))
+        {
+            $search = $_GET['search'];
+        }
+
+        $categories = Category::orderByDesc('id')->where('name','like','%' . $search . '%')->whereNull('parent_id')->paginate($value);
+        $categories->withPath('/category?search=' . $search . '&value=' . $value); 
+       
         return view('admin.category.index',compact('categories'));
     }
 
@@ -35,7 +52,7 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
        $category = Category::create($request->all());
         return back()
@@ -50,7 +67,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        /* Child of parent category */
+        $categories = Category::where('parent_id',$category->id)->get();
+        return view('admin.category.parent',compact('category','categories'));
        
     }
 
@@ -72,7 +91,7 @@ class CategoryController extends Controller
      * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
         $category->update($request->all());
 
@@ -93,6 +112,19 @@ class CategoryController extends Controller
             ->with(['error'=>'دسته بندی حذف شد!','restoreUrl'=>'category.restore','restore_id'=>$category->id]); /* Session error for set background danger! */
     }
 
+     /* Multi soft delete resource from storage. */
+     public function multiDestroy(Request $request)
+     {
+         foreach($request->input('ids') as $id)
+         {
+             $category = Category::find($id);
+             $category->delete();
+         }
+         Session::flash('error','موارد انتخاب شده حذف شدند!'); /* Session error for set background red! */
+     }
+
+
+
     /* Restore the specified resource from storage. */
     public function restore($id)
     {
@@ -101,20 +133,43 @@ class CategoryController extends Controller
             ->with(['message'=>"دسته بندی بازگردانی شد. #$id",'category_id'=>$id]);
     }
 
-    /* Remove all selected resource from storage. */
-    public function multiDelete(Request $request)
-    {
-        foreach($request->input('ids') as $id)
-        {
-            $category = Category::find($id);
-            $category->delete();
-        }
-        Session::flash('error','موارد انتخاب شده حذف شدند!'); /* Session error for set background red! */
-    }
+      /* Multi restore selected resource from storage. */
+      public function multiRestore(Request $request)
+      {
+          foreach($request->ids as $id)
+          {
+              $category = Category::onlyTrashed($id)->first();
+              $category->restore();
+          }
+          Session::flash('message','مطالب انتخاب شده بازگردانی شدند!');
+      }
 
+
+    /* Show trash resource from storage. */
     public function trash()
     {
         $categories = Category::onlyTrashed()->get();
         return view('admin.category.trash',compact('categories'));
     }
+
+    /* Trash delete resource from storage. */
+    public function trashDelete($id)
+    {
+        $category = Category::onlyTrashed($id)->first();
+        $category->forceDelete();
+        return back()
+            ->with('error','مطلب حذف شد!');
+    }
+
+    /* Multi trash delete selected resource from storage. */
+    public function multiTrashDelete(Request $request)
+    {
+        foreach($request->ids as $id)
+        {
+            $category = Category::onlyTrashed($id)->first();
+            $category->forceDelete();
+        }
+        Session::flash('error','مطالب انتخاب شده حذف شدند!');
+    }
+
 }

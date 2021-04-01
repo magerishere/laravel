@@ -39,7 +39,7 @@
                                 </div>
                                 <div class="tab-pane fade show active" id="product-1" role="tabpanel">
                                     <div class="product-img">
-                                        <img src="{{ $post->image ? $post->image->url : '/storage/images/laravel.jfif' }}" alt="Image Post" class="img-fluid mx-auto d-block">
+                                        <img src="{{ $post->image ? '/' . $post->image->url : '/storage/images/laravel.jfif' }}" alt="Image Post" class="img-fluid mx-auto d-block">
                                     </div>
                                 </div>
                             
@@ -63,7 +63,8 @@
             </div>
             <div class="col-xl-7">
                 <div class="mt-4 mt-xl-3 ps-xl-4">
-                    <h5 class="font-size-14"><a href="#" class="text-muted">{{ $post->category->first()->name }}</a></h5>
+                    <h5 class="font-size-14"><a href="#" class="text-muted"> 
+                        {{ $post->category->first() ? $post->category->first()->name : 'بدون دسته بندی' }}
                     <h4 class="font-size-20 mb-3">{{ $post->title }}</h4>
 
                     <div class="text-muted">

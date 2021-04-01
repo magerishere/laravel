@@ -20,11 +20,11 @@
                     </div>
                     <div class="col-md-4">
                         @include('messages')
-                        <div id="multiDeleteMessage" class="alert alert-danger text-center"  style="display: none"> مشکلی پیش آمد! دوباره تلاش کنید</div>
+                        <div id="multiDestroyMessage" class="alert alert-danger text-center"  style="display: none"> مشکلی پیش آمد! دوباره تلاش کنید</div>
                     </div>
                     <div class="col-md-4 mb-3">
-                        <button type="button" class="btn btn-warning" onclick="restoreAllSelector()" id="restoreAllSelectorBtn" disabled>بازگردانی انتخاب شده ها</button>
-                        <button type="button" onclick="deleteAllSelector()" id="deleteAllSelectorBtn" class="btn btn-danger" disabled>حذف انتخاب شده ها</button>
+                        <button type="button" class="btn btn-warning" onclick="multiRestore()" id="multiRestoreBtn" disabled>بازگردانی انتخاب شده ها</button>
+                        <button type="button" onclick="multiDestroy()" id="multiDestroyBtn" class="btn btn-danger" disabled>حذف انتخاب شده ها</button>
                     </div>
                     
                     <div class="table-responsive">
@@ -32,29 +32,29 @@
 
                             <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="checkBoxAll" onclick="checkBoxAll()"></th>
-                                    <th class="text-center">#</th>
-                                    <th class="text-center">عنوان</th>
-                                    <th class="text-center">عکس</th>
-                                    <th class="text-center">محتوا</th>
-                                    <th class="text-center">تاریخ حذف</th>
-                                    <th class="text-center">بازگردانی</th>
-                                    <th class="text-center">حذف</th>
+                                    <th class="text-center align-middle"><input type="checkbox" id="checkBoxAll" onclick="checkBoxAll()"></th>
+                                    <th class="text-center align-middle">#</th>
+                                    <th class="text-center align-middle">عنوان</th>
+                                    <th class="text-center align-middle">عکس</th>
+                                    <th class="text-center align-middle">محتوا</th>
+                                    <th class="text-center align-middle">تاریخ حذف</th>
+                                    <th class="text-center align-middle">بازگردانی</th>
+                                    <th class="text-center align-middle">حذف</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($posts as $post)
                                     <tr class="{{ $post->id == session('post_id') ? 'alert-success' : '' }}">
-                                        <td class="align-middle"><input type="checkbox" name="checkBox[]" value="{{ $post->id }}" onclick="checkBoxHandler({{ $post->id }})" ></th>
-                                        <th scope="row" class="align-middle">{{ $post->id }}</th>
-                                        <td class="align-middle">{{ Str::limit($post->title,13) }}</td>
-                                        <td class="align-middle"><a href="{{ route('post.show',$post->id) }}"><img width="70px" src="{{ $post->image ? $post->image->url : '/storage/images/laravel.jfif' }}" alt=""></a></td>
+                                        <td class="text-center align-middle"><input type="checkbox" name="checkBox[]" value="{{ $post->id }}" onclick="checkBoxHandler({{ $post->id }})" ></th>
+                                        <th scope="row" class="text-center align-middle">{{ $post->id }}</th>
+                                        <td class="text-center align-middle">{{ Str::limit($post->title,13) }}</td>
+                                        <td class="text-center align-middle"><img width="70px" src="{{ $post->image ? '/' . $post->image->url : '/storage/images/laravel.jfif' }}" alt=""></td>
                                         
-                                        <td class="align-middle">{!! Str::limit($post->description,50) !!}</td> 
-                                        <td class="align-middle">{{ $post->deleted_at->diffForHumans() }}</td>
+                                        <td class="text-center align-middle">{!! Str::limit($post->description,50) !!}</td> 
+                                        <td class="text-center align-middle">{{ $post->deleted_at->diffForHumans() }}</td>
                                         
-                                        <td class="align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning">بازگردانی</a></td>
-                                        <td class="align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger">حذف</button></form></td>
+                                        <td class="text-center align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning"><i class="fas fa-trash-restore"></i></a></td>
+                                        <td class="text-center align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fas fa-truck-loading"></i></button></form></td>
                                     </tr>
                                 @endforeach
                               
@@ -84,11 +84,11 @@
                 ids.push(String(id));
             }
             if(ids.length > 0) {
-                document.getElementById('deleteAllSelectorBtn').disabled = false;
-                document.getElementById('restoreAllSelectorBtn').disabled = false;
+                document.getElementById('multiDestroyBtn').disabled = false;
+                document.getElementById('multiRestoreBtn').disabled = false;
             } else { 
-                document.getElementById('deleteAllSelectorBtn').disabled = true;
-                document.getElementById('restoreAllSelectorBtn').disabled = true;
+                document.getElementById('multiDestroyBtn').disabled = true;
+                document.getElementById('multiRestoreBtn').disabled = true;
             }
        
         }
@@ -106,15 +106,15 @@
                     }
             } 
             if(ids.length > 0) {
-                document.getElementById('deleteAllSelectorBtn').disabled = false;
-                document.getElementById('restoreAllSelectorBtn').disabled = false;
+                document.getElementById('multiDestroyBtn').disabled = false;
+                document.getElementById('multiRestoreBtn').disabled = false;
             } else { 
-                document.getElementById('deleteAllSelectorBtn').disabled = true;
-                document.getElementById('restoreAllSelectorBtn').disabled = true;
+                document.getElementById('multiDestroyBtn').disabled = true;
+                document.getElementById('multiRestoreBtn').disabled = true;
             }
         }
 
-        const deleteAllSelector = () => {
+        const multiDestroy = () => {
             $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -133,14 +133,14 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: '/post/multiforcedelete',
+                                url: '/post/multitrashdelete',
                                 type: 'POST',
                                 data: {ids},
                                 success:function(res) {
                                     location.reload();  
                                 },
                                 error:function(e) {
-                                    document.getElementById('multiDeleteMessage').style.display = 'block';
+                                    document.getElementById('multiDestroyMessage').style.display = 'block';
                                     console.log(e);
                                 }
                             });
@@ -150,7 +150,7 @@
                 }
             }
 
-            const restoreAllSelector = () => {
+            const multiRestore = () => {
             $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -176,7 +176,7 @@
                                     location.reload();  
                                 },
                                 error:function(e) {
-                                    document.getElementById('multiDeleteMessage').style.display = 'block';
+                                    document.getElementById('multiDestroyMessage').style.display = 'block';
                                     console.log(e);
                                 }
                             });
