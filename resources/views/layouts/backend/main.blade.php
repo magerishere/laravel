@@ -14,16 +14,16 @@
     <link rel="shortcut icon" href="assets/images/favicon.ico" />
     <!-- Bootstrap Css -->
     <link
-      href="{{ asset('assets/css/bootstrap.rtl.css') }}"
+      href="{{ asset('assets/backend/css/bootstrap.rtl.css') }}"
       rel="stylesheet"
       type="text/css"
     />
     <!-- Icons Css -->
-    <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('assets/backend/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
-    <link href="{{ asset('assets/css/app.rtl.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-    {{-- <link rel="stylesheet" href="{{ asset('css/font-awesome.css') }}"> --}}
+    <link href="{{ asset('assets/backend/css/app.rtl.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('assets/font-awesome.min.css') }}">
+
   
   </head>
 
@@ -410,7 +410,7 @@
               >
                 <img
                   class="rounded-circle header-profile-user"
-                  src="assets/images/users/avatar-4.jpg"
+                  src="{{ auth()->user()->image ? '/' . auth()->user()->image->url : '/storage/images/man-avatar.jfif' }}"
                   alt="Header Avatar"
                 />
                 <span
@@ -452,11 +452,11 @@
                 >
                 <a
                   class="dropdown-item"
-                  onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                  href="{{ route('admin.logout') }}"
                   ><i
                     class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"
                   ></i>
-                  <span class="align-middle">Sign out</span></a
+                  <span class="align-middle">خروج</span></a
                 >
                 <form
                   id="logout-form"
@@ -959,23 +959,23 @@
 
     <!-- JAVASCRIPT -->
     <!-- JAVASCRIPT -->
-    <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('assets/js/metismenu.min.js') }}"></script>
-    <script src="{{ asset('assets/js/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/node-waves.min.js') }}"></script>
-    <script src="{{ asset('assets/js/waypoints.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery-counterup.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/metismenu.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/simplebar.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/node-waves.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/waypoints.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/jquery-counterup.min.js') }}"></script>
 
     <!-- apexcharts -->
-    <script src="{{ asset('assets/js/apexcharts.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dashboard.init.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/dashboard.init.js') }}"></script>
 
     <!-- App js -->
-    <script src="{{ asset('assets/js/app.min.js') }}"></script>
-    <script src="{{ asset('js/ckeditor.js') }}"></script>
-    <script src="{{ asset('js/fa.js') }}"></script>
-    <script src="{{ asset('js/sweet-alert.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/app.min.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/ckeditor.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/fa.js') }}"></script>
+    <script src="{{ asset('assets/backend/js/sweet-alert.js') }}"></script>
 
     @yield('footer')
   </body>

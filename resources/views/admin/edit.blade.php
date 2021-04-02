@@ -77,7 +77,7 @@
     <div class="tab-content p-4">
             <div>
                 @include('messages')
-                <h5 class="font-size-16 mb-3">ویرایش پروفایل <a href="{{ route('admin.show',$admin->id) }}" class="float-end"><i class="fas fa-arrow-alt-circle-left" style="font-size: 26px"></i></a></h5>
+                <h5 class="font-size-16 mb-3">ویرایش پروفایل <a href="{{ route('admin.show',$admin->id) }}" class="float-end"><i class="fa fa-arrow-alt-circle-left" style="font-size: 26px"></i></a></h5>
                 <form action="{{ route('admin.update',$admin->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PATCH')

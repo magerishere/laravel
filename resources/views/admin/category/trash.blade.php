@@ -36,7 +36,7 @@
                                     <th class="text-center align-middle">#</th>
                                     <th class="text-center align-middle">عنوان</th>
                                     <th class="text-center align-middle">زیر مجموعه ها</th>
-                                    <th class="text-center align-middle">تاریخ حذف <i class="fas fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
+                                    <th class="text-center align-middle">تاریخ حذف <i class="fa fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
                                     <th class="text-center align-middle">بازگردانی</th>
                                     <th class="text-center align-middle">حذف</th>
                                 </tr>
@@ -48,16 +48,16 @@
                                         <th scope="row" class="text-center align-middle">{{ $category->id }}</th>
                                         <td class="text-center align-middle"> 
                                             @if (!$category->parent_id)
-                                            <i class="fas fa-star"></i>
+                                            <i class="fa fa-star"></i>
                                             @endif
                                             {{ $category->name }}
                                         </td>
                                         <td class="text-center align-middle">
                                             @if (!$category->parent_id)
                                                 <div id="parent{{ $category->id }}"></div>
-                                                <i class="fas fa-eye btn btn-info" id="eye{{ $category->id }}"  onclick="getParentDetail({{ $category->id }})"></i>
+                                                <i class="fa fa-eye btn btn-info" id="eye{{ $category->id }}"  onclick="getParentDetail({{ $category->id }})"></i>
                                             @else
-                                                <i class="fas fa-eye-slash"></i>
+                                                <i class="fa fa-eye-slash"></i>
                                             @endif
                                         </td>
                                         <td class="text-center align-middle">
@@ -68,8 +68,8 @@
                                                 {{ $category->deleted_at->diffForHumans() }}
                                             </div>
                                         </td>
-                                        <td class="text-center align-middle"><a href="{{ route('category.restore',$category->id) }}"><button type="button" class="btn btn-warning"><i class="fas fa-trash-restore"></i></button></a></td>
-                                        <td class="text-center align-middle"> <form action="{{ route('category.trashDelete',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fas fa-truck-loading"></i></button> </form></td>
+                                        <td class="text-center align-middle"><a href="{{ route('category.restore',$category->id) }}"><button type="button" class="btn btn-warning"><i class="fa fa-reply" aria-hidden="true"></i></button></a></td>
+                                        <td class="text-center align-middle"> <form action="{{ route('category.trashDelete',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button> </form></td>
                                         
                                     </tr>
                                 @endforeach

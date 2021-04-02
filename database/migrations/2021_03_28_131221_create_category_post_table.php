@@ -14,15 +14,17 @@ class CreateCategoryPostTable extends Migration
     public function up()
     {
         Schema::create('category_post', function (Blueprint $table) {
-            $table->id();
-            $table->tinyInteger('post_id')->unsigned();
-            $table->tinyInteger('category_id')->unsigned();
+            $table->mediumIncrements('id');
+            $table->unsignedTinyInteger('post_id');
+            $table->unsignedTinyInteger('category_id');
+            // $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            // $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+        
             $table->timestamps();
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            
         });
+ 
     }
+
 
     /**
      * Reverse the migrations.

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminRequest;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Models\Admin;
 use App\Models\AdminMeta;
 use App\Models\Image;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -135,10 +137,10 @@ class AdminController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('admin.login')->with('message','You succefuly logout');
+        return redirect()->route('admin.login')->with('message','با موفقیت خارج شدید!');
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
         
         $admin = Auth::user();
@@ -152,7 +154,9 @@ class AdminController extends Controller
             $request->session()->invalidate();
             $request->session()->regenerateToken();
             return redirect('/login/admin')
-                ->with('message','رمز عبور شما با موفقیت تغییر کرد1');
+                ->with('message','رمز عبور شما با موفقیت تغییر کرد!');
         }
+        return back()
+            ->with('error','رمز عبور اشتباه است!');
     }
 }

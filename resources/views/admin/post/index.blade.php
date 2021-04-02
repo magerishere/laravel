@@ -13,10 +13,10 @@
                 <div class="card-body row">
                    
                     @if ($posts->count() == 0 && !session()->has('restoreUrl') && !session()->has('restoresUrl'))
-                        <h1 class="text-center">هیچ مطلبی وجود ندارد <a href="{{ route('post.create') }}" class="btn btn-primary"><i class="fas fa-plus-square"></i></a></h1> 
+                        <h1 class="text-center">هیچ مطلبی وجود ندارد <a href="{{ route('post.create') }}" class="btn btn-primary"><i class="fa fa-plus-square"></i></a></h1> 
                     @else 
                     <div class="col-md-2">
-                        <h4 class="card-title"><a href="{{ route('post.create') }}" class="btn btn-primary"><i class="fas fa-plus-square"></i></a> جدول مطالب</h4>
+                        <h4 class="card-title"><a href="{{ route('post.create') }}" class="btn btn-primary"><i class="fa fa-plus-square"></i></a> جدول مطالب</h4>
                     </div>
                     <div class="col-md-3">
                         <div class="input-group">
@@ -24,7 +24,7 @@
                                 <input type="search" id="search" class="form-control" placeholder="جستجو عنوان ..." />  
                             </div>
                             <button type="button" onclick="searchHandler()" class="btn btn-primary form-control">
-                                <i class="fas fa-search"></i>
+                                <i class="fa fa-search"></i>
                             </button>
                          
                         </div>
@@ -47,7 +47,7 @@
                                     <th class="text-center align-middle">#</th>
                                     <th class="text-center align-middle">عنوان</th>
                                     <th class="text-center align-middle">عکس</th>
-                                    <th class="text-center align-middle">تاریخ ایجاد <i class="fas fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
+                                    <th class="text-center align-middle">تاریخ ایجاد <i class="fa fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
                                     <th class="text-center align-middle">تاریخ بروزرسانی</th>
                                     <th class="text-center align-middle">مشاهده</th>
                                     <th class="text-center align-middle">ویرایش</th>
@@ -77,9 +77,9 @@
                                                 {{ $post->updated_at->diffForHumans() }}
                                             </div>
                                         </td>
-                                        <td class="text-center align-middle"><a href="{{ route('post.show',$post->id) }}" class="btn btn-info"><i class="fas fa-eye"></i></a></td>
-                                        <td class="text-center align-middle"><a href="{{ route('post.edit',$post->id) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a></td>
-                                        <td class="text-center align-middle"><form action="{{ route('post.destroy',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button></form></td>
+                                        <td class="text-center align-middle"><a href="{{ route('post.show',$post->id) }}" target="_blank" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
+                                        <td class="text-center align-middle"><a href="{{ route('post.edit',$post->id) }}" class="btn btn-primary"><i class="fa fa-edit"></i></a></td>
+                                        <td class="text-center align-middle"><form action="{{ route('post.destroy',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button></form></td>
                                     </tr>
                                 @endforeach
                               

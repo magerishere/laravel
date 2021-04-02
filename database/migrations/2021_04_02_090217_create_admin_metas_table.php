@@ -14,15 +14,15 @@ class CreateAdminMetasTable extends Migration
     public function up()
     {
         Schema::create('admin_metas', function (Blueprint $table) {
-            $table->id();
+            $table->mediumIncrements('id');
             $table->tinyInteger('admin_id');
-            $table->string('fname',50);
-            $table->string('lname',50);
-            $table->string('email',120);
-            $table->string('phone_number',11);
-            $table->string('ability');
-            $table->text('about');
-            $table->text('address');
+            $table->string('fname',50)->nullable();
+            $table->string('lname',50)->nullable();
+            $table->string('email',120)->nullable();
+            $table->string('phone_number',11)->nullable();
+            $table->mediumText('ability')->nullable();
+            $table->text('about')->nullable();
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }

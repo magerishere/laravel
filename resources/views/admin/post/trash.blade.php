@@ -37,7 +37,7 @@
                                     <th class="text-center align-middle">عنوان</th>
                                     <th class="text-center align-middle">عکس</th>
                                     <th class="text-center align-middle">محتوا</th>
-                                    <th class="text-center align-middle">تاریخ حذف <i class="fas fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
+                                    <th class="text-center align-middle">تاریخ حذف <i class="fa fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
                                     <th class="text-center align-middle">بازگردانی</th>
                                     <th class="text-center align-middle">حذف</th>
                                 </tr>
@@ -61,8 +61,8 @@
                                             </div>
                                         </td>
                                         
-                                        <td class="text-center align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning"><i class="fas fa-trash-restore"></i></a></td>
-                                        <td class="text-center align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fas fa-truck-loading"></i></button></form></td>
+                                        <td class="text-center align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning"><i class="fa fa-reply" aria-hidden="true"></i></a></td>
+                                        <td class="text-center align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button></form></td>
                                     </tr>
                                 @endforeach
                               

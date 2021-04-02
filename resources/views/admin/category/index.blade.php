@@ -19,25 +19,25 @@
                         </div>
                     @else
                         
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="input-group">
                             <div class="form-outline">
                                 <input type="search" id="search" class="form-control" placeholder="جستجو عنوان ..." />  
                             </div>
                             <button type="button" onclick="searchHandler()" class="btn btn-primary">
-                                <i class="fas fa-search"></i>
+                                <i class="fa fa-search"></i>
                             </button>
                          
                         </div>
                         <br>
                         <h4 class="card-title">جدول دسته بندی ها</h4>
+                        @include('messages')
                         
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <button id="multiDestroyBtn" onclick="multiDestroy()" class="btn btn-danger mb-3 float-end" style="display: none">حذف انتخاب شده ها</button>
                         <div id="multiDestroyMessage" class="alert alert-danger"  style="display: none">خطا! دوباره تلاش کنید</div>
 
-                        @include('messages')
                     </div>
                     
                     <div class="table-responsive">
@@ -59,11 +59,11 @@
                                     <tr class="{{ $category->id == session('category_id') ? 'alert-success' : '' }}">
                                         <th><input type="checkbox" value="{{ $category->id }}" name="checkBox[]" onclick="checkBoxHandler({{ $category->id }})" ></th>
                                         <th scope="row" class="text-center align-middle">{{ $category->id }}</th>
-                                        <td class="text-center align-middle"><i class="fas fa-star"></i>{{ $category->name }}</td>
+                                        <td class="text-center align-middle"><i class="fa fa-star"></i>{{ $category->name }}</td>
                                         <td class="text-center align-middle">{{ $category->created_at->diffForHumans() }}</td>
-                                        <td class="text-center align-middle"><a href="{{ route('category.show',$category->id) }}" class="btn btn-info"><i class="fas fa-eye"></i></a></td>
-                                        <td class="text-center align-middle"><button type="button" class="btn btn-primary" onclick="editCategory({{ $category->id }},{{ json_encode($category->name) }})"><i class="fas fa-edit"></i></button></td>
-                                        <td class="text-center align-middle"> <form action="{{ route('category.destroy',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fas fa-trash"></i></button> </form></td>
+                                        <td class="text-center align-middle"><a href="{{ route('category.show',$category->id) }}" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
+                                        <td class="text-center align-middle"><button type="button" class="btn btn-primary" onclick="editCategory({{ $category->id }},{{ json_encode($category->name) }})"><i class="fa fa-edit"></i></button></td>
+                                        <td class="text-center align-middle"> <form action="{{ route('category.destroy',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fa fa-trash"></i></button> </form></td>
                                     </tr>
                                 @endforeach
                               
@@ -86,7 +86,7 @@
                             <div class="form-group col-md-6">
                                 <input type="text" name="name" class="form-control" autofocus>
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-plus-square"></i></button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-plus-square"></i></button>
                         </form>
                     </div>
 
@@ -125,7 +125,7 @@
                             <div class="form-group col-md-6">
                                 <input type="text" name="name" value=${name} class="form-control">
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-edit"></i></button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-edit"></i></button>
                         </form>
                     </div>
                 </div>

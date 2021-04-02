@@ -65,9 +65,13 @@
                           <div class="mb-3">
                               <label class="form-label">دسته بندی</label>
                               <select name="name" class="form-select select2 select2-hidden-accessible" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                <option value="{{ $post->category->first()->id }}">{{ $post->category->first()->name }}</option>
+                                <option value="{{ $post->category->first() ? $post->category->first()->id : '' }}">{{ $post->category->first() ? $post->category->first()->name : 'بدون دسته بندی' }}</option>
                                   @foreach ($categories as $category)
-                                    @if ($category->id != $post->category->first()->id)
+                                    @if ($post->category->first())  
+                                      @if ($category->id != $post->category->first()->id)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>  
+                                      @endif
+                                    @else
                                       <option value="{{ $category->id }}">{{ $category->name }}</option>  
                                     @endif
                                   @endforeach

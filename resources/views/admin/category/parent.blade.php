@@ -20,16 +20,16 @@
                         </div>
                     @else
                         
-                    <div class="col-md-5">
+                    <div class="col-md-8">
                       
                         <h4 class="card-title text-">جدول زیرمجموعه <strong class="text-danger"> {{ $category->name }} </strong></h4>
-                        
+                        @include('messages')
+
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-4">
                         <button id="multiDestroyBtn" onclick="multiDestroy()" class="btn btn-danger mb-3 float-end" style="display: none">حذف انتخاب شده ها</button>
                         <div id="multiDestroyMessage" class="alert alert-danger"  style="display: none">خطا! دوباره تلاش کنید</div>
 
-                        @include('messages')
                     </div>
                     
                     <div class="table-responsive">
@@ -52,8 +52,8 @@
                                         <th scope="row" class="text-center align-middle">{{ $child->id }}</th>
                                         <td class="text-center align-middle">{{ $child->name }}</td>
                                         <td class="text-center align-middle">{{ $child->created_at->diffForHumans() }}</td>
-                                        <td class="text-center align-middle"><button type="button" class="btn btn-primary" onclick="editCategory({{ $child->id }},{{ json_encode($child->name) }},{{ $category->id }})"><i class="fas fa-edit"></i></button></td>
-                                        <td class="text-center align-middle"> <form action="{{ route('category.destroy',$child->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fas fa-trash"></i></button> </form></td>
+                                        <td class="text-center align-middle"><button type="button" class="btn btn-primary" onclick="editCategory({{ $child->id }},{{ json_encode($child->name) }},{{ $category->id }})"><i class="fa fa-edit"></i></button></td>
+                                        <td class="text-center align-middle"> <form action="{{ route('category.destroy',$child->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fa fa-trash"></i></button> </form></td>
                                     </tr>
                                 @endforeach
                               
@@ -77,7 +77,7 @@
                             <div class="form-group col-md-6">
                                 <input type="text" name="name" class="form-control" autofocus>
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-plus-square"></i></button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-plus-square"></i></button>
                         </form>
                     </div>
 
@@ -111,7 +111,7 @@
                             <div class="form-group col-md-6">
                                 <input type="text" name="name" value=${name} class="form-control">
                             </div>
-                            <button type="submit" class="btn btn-primary"><i class="fas fa-edit"></i></button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-edit"></i></button>
                         </form>
                     </div>
                 </div>

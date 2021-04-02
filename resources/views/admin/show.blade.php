@@ -29,7 +29,7 @@
         <div class="text-center">
             <div class="dropdown float-end">
                 
-                    <a href="{{ route('admin.edit',$admin->id) }}" ><i class="fas fa-edit"></i></a>
+                    <a href="{{ route('admin.edit',$admin->id) }}" ><i class="fa fa-edit"></i></a>
                 
                
             </div>
@@ -110,9 +110,9 @@
     </ul>
     <!-- Tab content -->
     <div class="tab-content p-4">
+        @include('messages')
         <div class="tab-pane active" id="tasks" role="tabpanel">
             <div>
-                @include('messages')
                 <h5 class="font-size-16 mb-3">Active</h5>
 
                 <div class="table-responsive">
@@ -339,7 +339,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label>رمزعبور فعلی</label>
-                                    <input type="password" name="oldPassword" class="form-control" autofocus>
+                                    <input type="password" name="oldPassword" class="form-control" required autofocus>
                                 </div>
                             </div>
                         </div>
@@ -347,7 +347,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label>رمزعبور جدید</label>
-                                    <input type="password" name="newPassword" class="form-control">
+                                    <input type="password" name="newPassword" class="form-control" required>
                                 </div>
                             </div>
                         </div>
@@ -355,7 +355,7 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label>تکرار رمزعبور جدید</label>
-                                    <input type="password" name="newPassword_confirmation" class="form-control">
+                                    <input type="password" name="newPassword_confirmation" class="form-control" required>
                                 </div>
                             </div>
                         </div>

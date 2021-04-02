@@ -26,7 +26,7 @@ class AdminRequest extends FormRequest
         return [
             'fname'=>'max:50',
             'lname'=>'max:50',
-            'email'=>'email:rfc,dns',
+            // 'email'=>'email',
             'phone_number'=>'max:11',
             'ability' => 'max:255',
             'url'=>'mimes:png,jpg,jpeg',
@@ -38,7 +38,7 @@ class AdminRequest extends FormRequest
         return [
             'fname.max' => 'نام بیشتر از 50 کاراکتر نباشد!',
             'lname.max' => 'نام خانوادگی بیشتر از 50 کاراکتر نباشد!',
-            'email.email' => 'ایمیل معتبر وارد کنید!',
+            // 'email.email' => 'ایمیل معتبر وارد کنید!',
             'phone_number.max' => 'شماره تلفن همراه معتبر وارد کنید',
             'ability.max' => 'مهارت های شما بیشتر از 255 کاراکتر نباشد',
             'url.mimes' => 'عکس با پسوند png,jpg,jpeg قابل قبول میباشد!',

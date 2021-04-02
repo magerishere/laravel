@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\AdminMetaController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
@@ -53,13 +53,18 @@ Route::middleware('auth:admin')->group(function() {
     
 });
 
+/*  Resource routes   */
+Route::resource('/blog',BlogController::class);
+
+
 /*  Post routes   */
 Route::post('/login/admin',[AdminController::class,'login']);
 
 /*  Get routes   */
 Route::get('/', function () {
-    return view('welcome');
+    return view('layouts.frontend.index');
 });
+
 Route::get('/login/admin',function(){
     return view('admin.login');
 })->name('admin.login');
