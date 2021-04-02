@@ -1,40 +1,39 @@
-<div class="col-md-2 mt-5">
-        <select id="numberOfPerPage" onchange="numberOfPerPageHandler()" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm">
-                    @if (request()->get('value'))
-                        <option value="{{ request()->get('value') }}">{{ request()->get('value') }}</option>
-                    @endif
-                    @switch(request()->get('value'))
-                        @case(10)
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            @break
-                        @case(25)
-                            <option value="10">10</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            @break
-                        @case(50)
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="100">100</option>
-                            @break
-                        @case(100)
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            @break
-                        @default
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                    @endswitch
-        </select> 
-</div>
 @if ($paginator->hasPages())
+<div class="col-md-2 mt-5">
+    <select id="numberOfPerPage" onchange="numberOfPerPageHandler()" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm">
+                @if (request()->get('value'))
+                    <option value="{{ request()->get('value') }}">{{ request()->get('value') }}</option>
+                @endif
+                @switch(request()->get('value'))
+                    @case(10)
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        @break
+                    @case(25)
+                        <option value="10">10</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        @break
+                    @case(50)
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="100">100</option>
+                        @break
+                    @case(100)
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        @break
+                    @default
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                @endswitch
+    </select> 
+</div>
     <div class="col-md-10">
-
         <nav class="mt-5">
             <ul class="pagination justify-content-center">
                 {{-- Previous Page Link --}}

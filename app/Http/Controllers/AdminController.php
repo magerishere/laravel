@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminRequest;
 use App\Models\Admin;
+use App\Models\AdminMeta;
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +49,7 @@ class AdminController extends Controller
      */
     public function show(Admin $admin)
     {
-        //
+        return view('admin.show',compact('admin'));
     }
 
     /**
@@ -57,7 +60,8 @@ class AdminController extends Controller
      */
     public function edit(Admin $admin)
     {
-        //
+
+        return view('admin.edit',compact('admin'));
     }
 
     /**
@@ -67,9 +71,42 @@ class AdminController extends Controller
      * @param  \App\Models\Admin  $admin
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Admin $admin)
-    {
-        //
+    public function update(AdminRequest $request, Admin $admin)
+    {  
+        if($admin->meta)
+        {
+            $admin->meta->update($request->except('url'));
+        } else {
+            AdminMeta::create($request->except('url'));
+        }
+
+        /* For update image profile */
+        if($admin->image) 
+        {
+            if($file = $request->file('url'))
+            {
+                $url = time() . $file->getClientOriginalName();
+                $file->move(public_path('storage/images'),$url);
+                unlink($admin->image->url);               
+                $admin->image->update([
+                    'url'=>$url,
+                ]);                
+            }
+        } else {
+            if($file = $request->file('url'))
+            {
+                $url = time() . $file->getClientOriginalName();
+                $file->move(public_path('storage/images'),$url);
+                Image::create([
+                    'url'=>$url,
+                    'imageable_id'=>$admin->id,
+                    'imageable_type' => 'Admin',
+                ]);                
+            }
+        }
+       
+        return back()
+            ->with('message','پروفایل شما ویرایش شد!'); 
     }
 
     /**
@@ -99,5 +136,23 @@ class AdminController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('admin.login')->with('message','You succefuly logout');
+    }
+
+    public function changePassword(Request $request)
+    {
+        
+        $admin = Auth::user();
+       
+        if(auth('admin')->attempt(['name'=>$admin->name,'password'=>$request->input('oldPassword')]))
+        {
+            $admin->update([
+                'password'=> bcrypt($request->input('newPassword')),
+            ]);
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/login/admin')
+                ->with('message','رمز عبور شما با موفقیت تغییر کرد1');
+        }
     }
 }

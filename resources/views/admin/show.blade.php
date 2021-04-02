@@ -9,7 +9,7 @@
 <div class="row">
 <div class="col-12">
 <div class="page-title-box d-flex align-items-center justify-content-between">
-<h4 class="mb-0">Profile</h4>
+<h4 class="mb-0">پروفایل</h4>
 
 <div class="page-title-right">
     <ol class="breadcrumb m-0">
@@ -28,52 +28,55 @@
     <div class="card-body">
         <div class="text-center">
             <div class="dropdown float-end">
-                <a class="text-body dropdown-toggle font-size-18" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="uil uil-ellipsis-v"></i>
-                </a>
-
-                <div class="dropdown-menu dropdown-menu-end" style="margin: 0px;">
-                    <a class="dropdown-item" href="#">Edit</a>
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Remove</a>
-                </div>
+                
+                    <a href="{{ route('admin.edit',$admin->id) }}" ><i class="fas fa-edit"></i></a>
+                
+               
             </div>
             <div class="clearfix"></div>
             <div>
-                <img src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/users/avatar-4.jpg" alt="" class="avatar-lg rounded-circle img-thumbnail">
+                <img src="{{ $admin->image ? '/' . $admin->image->url : '/storage/images/man-avatar.jfif' }}" alt="" class="avatar-lg rounded-circle img-thumbnail">
             </div>
-            <h5 class="mt-3 mb-1">{{ auth()->user()->name }}</h5>
-            <p class="text-muted">UI/UX Designer</p>
+            <h5 class="mt-3 mb-1">{{ $admin->name }}</h5>
+            <p class="text-muted">{{ $admin->meta ? $admin->meta->ability : '' }}</p>
 
             <div class="mt-4">
                 <button type="button" class="btn btn-light btn-sm"><i class="uil uil-envelope-alt me-2"></i>
-                    Message</button>
+                    ارسال پیام</button>
             </div>
         </div>
 
         <hr class="my-4">
 
         <div class="text-muted">
-            <h5 class="font-size-16">About</h5>
-            <p>Hi I'm Marcus,has been the industry's standard dummy text To an English person, it will seem like
-                simplified English, as a skeptical Cambridge.</p>
+            <h5 class="font-size-16">درباره</h5>
+            <p>{{ $admin->meta ? $admin->meta->about : '' }}</p>
             <div class="table-responsive mt-4">
                 <div>
-                    <p class="mb-1">Name :</p>
-                    <h5 class="font-size-16">Marcus</h5>
+                    <p class="mb-1">نام :</p>
+                    <h5 class="font-size-16">{{ $admin->meta ? $admin->meta->fname : '' }}</h5>
+                    <p class="mb-1">نام خانوادگی :</p>
+                    <h5 class="font-size-16">{{ $admin->meta ? $admin->meta->lname : '' }}</h5>
                 </div>
                 <div class="mt-4">
-                    <p class="mb-1">Mobile :</p>
-                    <h5 class="font-size-16">012-234-5678</h5>
+                    <p class="mb-1">شماره همراه :</p>
+                    <h5 class="font-size-16">{{ $admin->meta ? $admin->meta->phone_number : '' }}</h5>
                 </div>
                 <div class="mt-4">
-                    <p class="mb-1">E-mail :</p>
-                    <h5 class="font-size-16">marcus@minible.com</h5>
+                    <p class="mb-1">ایمیل :</p>
+                    <h5 class="font-size-16">{{ $admin->meta ? $admin->meta->email : '' }}</h5>
                 </div>
                 <div class="mt-4">
-                    <p class="mb-1">Location :</p>
-                    <h5 class="font-size-16">California, United States</h5>
+                    <p class="mb-1">آدرس :</p>
+                    <h5 class="font-size-16">{{ $admin->meta ? $admin->meta->address : '' }}</h5>
                 </div>
+                @if (!$admin->meta)
+                    
+                <div class="mt-4">
+                    <p class="mb-1">پروفایل شما تاکنون ویرایش نشده است! <span><a href="{{ route('admin.edit',$admin->id) }}" class="btn btn-primary">ویرایش کنید</a></span> </p>
+                    
+                </div>
+                @endif
 
             </div>
         </div>
@@ -85,195 +88,31 @@
 <div class="card mb-0">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+      
         <li class="nav-item">
-            <a class="nav-link active" data-bs-toggle="tab" href="#about" role="tab">
-                <i class="uil uil-user-circle font-size-20"></i>
-                <span class="d-none d-sm-block">About</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="tab" href="#tasks" role="tab">
+            <a class="nav-link active" data-bs-toggle="tab" href="#tasks" role="tab">
                 <i class="uil uil-clipboard-notes font-size-20"></i>
-                <span class="d-none d-sm-block">Tasks</span>
+                <span class="d-none d-sm-block">درخواست ها</span>
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="tab" href="#messages" role="tab">
                 <i class="uil uil-envelope-alt font-size-20"></i>
-                <span class="d-none d-sm-block">Messages</span>
+                <span class="d-none d-sm-block">پیغام ها</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-bs-toggle="tab" href="#about" role="tab">
+                <i class="uil uil-user-circle font-size-20"></i>
+                <span class="d-none d-sm-block">تنظیمات</span>
             </a>
         </li>
     </ul>
     <!-- Tab content -->
     <div class="tab-content p-4">
-        <div class="tab-pane active" id="about" role="tabpanel">
+        <div class="tab-pane active" id="tasks" role="tabpanel">
             <div>
-                <div>
-                    <h5 class="font-size-16 mb-4">Experience</h5>
-
-                    <ul class="activity-feed mb-0 ps-2">
-                        <li class="feed-item">
-                            <div class="feed-item-list">
-                                <p class="text-muted mb-1">2019 - 2020</p>
-                                <h5 class="font-size-16">UI/UX Designer</h5>
-                                <p>Abc Company</p>
-                                <p class="text-muted">To achieve this, it would be necessary to have uniform
-                                    grammar, pronunciation and more common words. If several languages coalesce,
-                                    the grammar of the resulting language is more simple and regular than that
-                                    of the individual</p>
-                            </div>
-                        </li>
-                        <li class="feed-item">
-                            <div class="feed-item-list">
-                                <p class="text-muted mb-1">2017 - 2019</p>
-                                <h5 class="font-size-16">Graphic Designer</h5>
-                                <p>xyz Company</p>
-                                <p class="text-muted">It will be as simple as occidental in fact, it will be
-                                    Occidental. To an English person, it will seem like simplified English, as a
-                                    skeptical Cambridge friend of mine told me what Occidental </p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h5 class="font-size-16 mb-4">Projects</h5>
-
-                    <div class="table-responsive">
-                        <table class="table table-nowrap table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Projects</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col" style="width: 120px;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">01</th>
-                                    <td><a href="#" class="text-dark">Brand Logo Design</a></td>
-                                    <td>
-                                        18 Jun, 2020
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-soft-primary font-size-12">Open</span>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="uil uil-ellipsis-v"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">02</th>
-                                    <td><a href="#" class="text-dark">Minible Admin</a></td>
-                                    <td>
-                                        06 Jun, 2020
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-soft-primary font-size-12">Open</span>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="uil uil-ellipsis-v"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">03</th>
-                                    <td><a href="#" class="text-dark">Chat app Design</a></td>
-                                    <td>
-                                        28 May, 2020
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-soft-success font-size-12">Complete</span>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="uil uil-ellipsis-v"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">04</th>
-                                    <td><a href="#" class="text-dark">Minible Landing</a></td>
-                                    <td>
-                                        13 May, 2020
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-soft-success font-size-12">Complete</span>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="uil uil-ellipsis-v"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">05</th>
-                                    <td><a href="#" class="text-dark">Authentication Pages</a></td>
-                                    <td>
-                                        06 May, 2020
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-soft-success font-size-12">Complete</span>
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                <i class="uil uil-ellipsis-v"></i>
-                                            </a>
-
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#">Action</a>
-                                                <a class="dropdown-item" href="#">Another action</a>
-                                                <a class="dropdown-item" href="#">Something else here</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane" id="tasks" role="tabpanel">
-            <div>
+                @include('messages')
                 <h5 class="font-size-16 mb-3">Active</h5>
 
                 <div class="table-responsive">
@@ -490,6 +329,48 @@
                 </div> <!-- end .border-->
             </div>
         </div>
+        <div class="tab-pane" id="about" role="tabpanel">
+            <section id="basic-example-p-2" role="tabpanel" aria-labelledby="basic-example-h-2" class="body current" aria-hidden="false" style="">
+                <div>
+                    <form action="{{ route('admin.changePassword') }}" method="POST">
+                        @csrf
+                    
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label>رمزعبور فعلی</label>
+                                    <input type="password" name="oldPassword" class="form-control" autofocus>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label>رمزعبور جدید</label>
+                                    <input type="password" name="newPassword" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label>تکرار رمزعبور جدید</label>
+                                    <input type="password" name="newPassword_confirmation" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="mb-3">
+                                    <input type="submit" value="تغییر رمزعبور" class="btn btn-primary">
+                                    <span class="text-muted">پس از تغییر به صورت خودکار از اکانت خارج میشوید!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+    </div>
     </div>
 </div>
 </div>

@@ -22,13 +22,14 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <div class="form-outline">
-                                <input type="search" id="search" class="form-control" placeholder="جستجو..." />  
+                                <input type="search" id="search" class="form-control" placeholder="جستجو عنوان ..." />  
                             </div>
                             <button type="button" onclick="searchHandler()" class="btn btn-primary">
                                 <i class="fas fa-search"></i>
                             </button>
                          
                         </div>
+                        <br>
                         <h4 class="card-title">جدول دسته بندی ها</h4>
                         
                     </div>

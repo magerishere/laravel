@@ -69,7 +69,7 @@
 
                     <div class="text-muted">
                         <span class="badge bg-success font-size-14 me-1"><i class="mdi mdi-star"></i> 4.2</span>
-                        234 Reviews
+                        از 0 رای
                     </div>
 
                     <h5 class="mt-4 pt-2"> نویسنده <span class="text-danger font-size-14 ms-2">admin</span></h5>
@@ -85,11 +85,7 @@
       
 
         <div class="mt-4">
-            <h5 class="font-size-14 mb-3">Reviews : </h5>
-            <div class="text-muted mb-3">
-                <span class="badge bg-success font-size-14 me-1"><i class="mdi mdi-star"></i> 4.2</span> 234
-                Reviews
-            </div>
+           
             <div class="border p-4 rounded">
                 <div class="border-bottom pb-3">
                     <p class="float-sm-end text-muted font-size-13">12 July, 2020</p>
@@ -113,48 +109,9 @@
 
                 </div>
 
-                <div class="border-bottom py-3">
-                    <p class="float-sm-end text-muted font-size-13">06 July, 2020</p>
-                    <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.0</div>
-                    <p class="text-muted mb-4">Sed ut perspiciatis unde omnis iste natus error sit</p>
-                    <div class="d-flex align-items-start">
-                        <div class="flex-1">
-                            <h5 class="font-size-15 mb-0">Joseph</h5>
-                        </div>
+               
 
-                        <ul class="list-inline product-review-link mb-0">
-                            <li class="list-inline-item">
-                                <a href="#"><i class="uil uil-thumbs-up"></i></a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#"><i class="uil uil-comment-alt-message"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
-
-                <div class="border-bottom py-3">
-                    <p class="float-sm-end text-muted font-size-13">26 June, 2020</p>
-                    <div class="badge bg-success mb-2"><i class="mdi mdi-star"></i> 4.2</div>
-                    <p class="text-muted mb-4">Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet
-                    </p>
-                    <div class="d-flex align-items-start">
-                        <div class="flex-1">
-                            <h5 class="font-size-15 mb-0">Paul</h5>
-                        </div>
-
-                        <ul class="list-inline product-review-link mb-0">
-                            <li class="list-inline-item">
-                                <a href="#"><i class="uil uil-thumbs-up"></i></a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a href="#"><i class="uil uil-comment-alt-message"></i></a>
-                            </li>
-                        </ul>
-                    </div>
-
-                </div>
+                
 
             </div>
         </div>

@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminMetaController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\RestoreController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +26,9 @@ Route::middleware('auth:admin')->group(function() {
     Route::resource('/post',PostController::class);
     Route::resource('/category',CategoryController::class);
 
+
     /*  Post routes   */
+    Route::post('/admin-change-password',[AdminController::class,'changePassword'])->name('admin.changePassword');
     Route::post('/post/multidestroy',[PostController::class,'multiDestroy'])->name('post.multiDestroy');
     Route::post('/post/multitrashdelete',[PostController::class,'multiTrashDelete'])->name('post.multiTrashDelete');
     Route::post('/post/multirestore',[PostController::class,'multiRestore'])->name('post.multiRestore');
@@ -43,12 +45,10 @@ Route::middleware('auth:admin')->group(function() {
     Route::get('/post/all/trash',[PostController::class,'trash'])->name('post.trash');
     Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
     Route::get('/category/all/trash',[CategoryController::class,'trash'])->name('category.trash');
+    Route::get('/category/parent/{id}',[CategoryController::class,'parent'])->name('category.parent');
     Route::get('/dashboard',function(){
         return view('admin.dashboard');
     })->name('admin.dashboard');
-    Route::get('/profile',function(){
-        return view('admin.profile');
-    })->name('admin.profile');
 
     
 });

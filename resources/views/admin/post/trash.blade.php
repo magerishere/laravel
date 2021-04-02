@@ -37,7 +37,7 @@
                                     <th class="text-center align-middle">عنوان</th>
                                     <th class="text-center align-middle">عکس</th>
                                     <th class="text-center align-middle">محتوا</th>
-                                    <th class="text-center align-middle">تاریخ حذف</th>
+                                    <th class="text-center align-middle">تاریخ حذف <i class="fas fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
                                     <th class="text-center align-middle">بازگردانی</th>
                                     <th class="text-center align-middle">حذف</th>
                                 </tr>
@@ -51,7 +51,15 @@
                                         <td class="text-center align-middle"><img width="70px" src="{{ $post->image ? '/' . $post->image->url : '/storage/images/laravel.jfif' }}" alt=""></td>
                                         
                                         <td class="text-center align-middle">{!! Str::limit($post->description,50) !!}</td> 
-                                        <td class="text-center align-middle">{{ $post->deleted_at->diffForHumans() }}</td>
+                                        <td class="text-center align-middle">
+                                            <div class="currentDate" style="display: none">
+                                            {{ \Morilog\Jalali\Jalalian::fromCarbon($post->created_at)->format('Y/m/d') }}
+                                            
+                                            </div>
+                                            <div class="diffForHumans">
+                                                {{ $post->deleted_at->diffForHumans() }}
+                                            </div>
+                                        </td>
                                         
                                         <td class="text-center align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning"><i class="fas fa-trash-restore"></i></a></td>
                                         <td class="text-center align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fas fa-truck-loading"></i></button></form></td>
@@ -76,6 +84,7 @@
 @section('footer')
     <script>
         let ids = [];
+        let basicData = false;
         const checkBoxHandler = (id) => {
             const index = ids.indexOf(String(id));
             if(index > -1) {
@@ -186,6 +195,24 @@
                 }
             }
 
+            const changeDateHandler = () => {
+            basicData = !basicData;
+            let diffForHumans =  document.getElementsByClassName('diffForHumans');
+            let currentDate =  document.getElementsByClassName('currentDate');
+           
+            for(let i = 0;i < diffForHumans.length;i++) {
+                if(basicData) {
+                    diffForHumans[i].style.display = 'none';
+                    currentDate[i].style.display = 'block';
+                } else {
+                    diffForHumans[i].style.display = 'block';
+                    currentDate[i].style.display = 'none';
+                }
+            
+            }
+           
+           
+        }
         
         
     </script>

@@ -35,31 +35,50 @@
                                     <th class="text-center align-middle"><input type="checkbox" id="checkBoxAll" onclick="checkBoxAll()"></th>
                                     <th class="text-center align-middle">#</th>
                                     <th class="text-center align-middle">عنوان</th>
-                                    <th class="text-center align-middle">تاریخ حذف</th>
+                                    <th class="text-center align-middle">زیر مجموعه ها</th>
+                                    <th class="text-center align-middle">تاریخ حذف <i class="fas fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
                                     <th class="text-center align-middle">بازگردانی</th>
                                     <th class="text-center align-middle">حذف</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($categories as $category)
-                                    <tr class="{{ $category->id == session('category_id') ? 'alert-success' : '' }}">
+                                    <tr class="{{ $category->id == session('category_id') ? 'alert-success' : '' }} parent">
                                         <th class="text-center align-middle"><input type="checkbox" value="{{ $category->id }}" name="checkBox[]" onclick="checkBoxHandler({{ $category->id }})" ></th>
                                         <th scope="row" class="text-center align-middle">{{ $category->id }}</th>
-                                        <td class="text-center align-middle">
+                                        <td class="text-center align-middle"> 
                                             @if (!$category->parent_id)
                                             <i class="fas fa-star"></i>
                                             @endif
                                             {{ $category->name }}
                                         </td>
-                                        <td class="text-center align-middle">{{ $category->deleted_at->diffForHumans() }}</td>
-                                        <td class="text-center align-middle"><a href="{{ route('category.restore',$category->id) }}"><button type="button" class="btn btn-warning">بازگردانی</button></a></td>
-                                        <td class="text-center align-middle"> <form action="{{ route('category.trashDelete',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger">حذف</button> </form></td>
+                                        <td class="text-center align-middle">
+                                            @if (!$category->parent_id)
+                                                <div id="parent{{ $category->id }}"></div>
+                                                <i class="fas fa-eye btn btn-info" id="eye{{ $category->id }}"  onclick="getParentDetail({{ $category->id }})"></i>
+                                            @else
+                                                <i class="fas fa-eye-slash"></i>
+                                            @endif
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <div class="currentDate" style="display: none">
+                                                {{ \Morilog\Jalali\Jalalian::fromCarbon($category->deleted_at)->format('Y/m/d') }}
+                                            </div>
+                                            <div class="diffForHumans">
+                                                {{ $category->deleted_at->diffForHumans() }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle"><a href="{{ route('category.restore',$category->id) }}"><button type="button" class="btn btn-warning"><i class="fas fa-trash-restore"></i></button></a></td>
+                                        <td class="text-center align-middle"> <form action="{{ route('category.trashDelete',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fas fa-truck-loading"></i></button> </form></td>
+                                        
                                     </tr>
                                 @endforeach
                               
                             </tbody>
+
                         </table>
                     </div>
+                
                  @endif
                 </div>
             </div>
@@ -73,6 +92,8 @@
 @section('footer')
 <script>
     let ids = [];
+    let run = false;
+    let basicData = false;
         const checkBoxHandler = (id) => {
             const index = ids.indexOf(String(id));
             if(index > -1) {
@@ -185,5 +206,51 @@
                     });
                 }
             }
+            const getParentDetail = (id) => {
+                if(!run) {
+                    run = true;
+                    $.ajax({
+                        url: '/category/parent/' + id,
+                        type:'get',
+                        success:function(res) {
+                            run = false;
+                            $(`#eye${id}`).hide();
+                            if(res.categories.length > 0) {
+                                res.categories.forEach(category => {
+                                    $(`#parent${id}`).append(category.name + '<br>');
+                                });
+                            } else {
+                                $(`#parent${id}`).append('زیرمجموعه ندارد!');
+                            }
+                        },error:function(e) {
+                            console.log(e);
+                        },
+                    });
+                }
+               
+            }
+
+            const changeDateHandler = () => {
+            basicData = !basicData;
+            let diffForHumans =  document.getElementsByClassName('diffForHumans');
+            let currentDate =  document.getElementsByClassName('currentDate');
+           
+            for(let i = 0;i < diffForHumans.length;i++) {
+                if(basicData) {
+                    diffForHumans[i].style.display = 'none';
+                    currentDate[i].style.display = 'block';
+                } else {
+                    diffForHumans[i].style.display = 'block';
+                    currentDate[i].style.display = 'none';
+                }
+            
+            }
+           
+           
+        }
+            
+
+           
+            
   </script>
 @endsection

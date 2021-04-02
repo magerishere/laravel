@@ -116,14 +116,23 @@ class PostController extends Controller
             ->update(['category_id'=>$request->input('name')]);
         if($file = $request->file('url'))
         {
-            
-            $url = time() . $file->getClientOriginalName();
-            $file->move(public_path("storage/images"),$url);
-            Image::create([
-                'url'=>$url,
-                'imageable_id'=>$post->id,
-                'imageable_type'=>'Post',
-            ]);
+            if($post->image) 
+            {
+                $url = time() . $file->getClientOriginalName();
+                $file->move(public_path("storage/images"),$url);
+                $post->image->update([
+                    'url'=>$url,
+                ]);
+            } else {
+                $url = time() . $file->getClientOriginalName();
+                $file->move(public_path("storage/images"),$url);
+                Image::create([
+                    'url'=>$url,
+                    'imageable_id'=>$post->id,
+                    'imageable_type'=>'Post',
+                ]);
+
+            }
         }
         return redirect()
             ->route('post.index')

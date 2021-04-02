@@ -59,6 +59,8 @@ class CategoryController extends Controller
             ->with(['message'=>"دسته بندی ایجاد شد. #$category->id",'category_id'=>$category->id]);
     }
 
+
+
     /**
      * Display the specified resource.
      *
@@ -157,6 +159,14 @@ class CategoryController extends Controller
     {
         $category = Category::onlyTrashed($id)->first();
         $category->forceDelete();
+        if(!$category->parent_id)
+        {
+            $categories = Category::where('parent_id',$id)->get();
+            foreach($categories as $child)
+            {
+                $child->forceDelete();
+            }
+        }
         return back()
             ->with('error','مطلب حذف شد!');
     }
@@ -168,8 +178,25 @@ class CategoryController extends Controller
         {
             $category = Category::onlyTrashed($id)->first();
             $category->forceDelete();
+            if(!$category->parent_id)
+            {
+                $categories = Category::where('parent_id',$id)->get();
+                foreach($categories as $child)
+                {
+                    $child->forceDelete();
+                }
+            }
         }
+   
         Session::flash('error','مطالب انتخاب شده حذف شدند!');
+    }
+
+    /* Show all child of parent category resource from storage. */
+    public function parent($id)
+    {
+        $categories = Category::where('parent_id',$id)->get();
+        return response()->json(['categories'=>$categories]);
+        
     }
 
 }

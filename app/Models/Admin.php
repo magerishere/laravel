@@ -12,5 +12,13 @@ class Admin extends Authenticatable
     protected $fillable = ['name','password'];
     protected $hidden = ['password'];
 
+    public function meta() {
+        return $this->hasOne(AdminMeta::class);
+    }
+
+    public function image() {
+        return $this->morphOne(Image::class,'imageable');
+    }
+
     
 }
