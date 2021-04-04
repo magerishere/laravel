@@ -415,7 +415,7 @@
                 />
                 <span
                   class="d-none d-xl-inline-block ms-1 fw-medium font-size-15"
-                  >Admin</span
+                  >{{ auth()->user()->name }}</span
                 >
                 <i
                   class="uil-angle-down d-none d-xl-inline-block font-size-15"

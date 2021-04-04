@@ -40,7 +40,9 @@ Route::middleware('auth')->group(function() {
     Route::post('/category/multidestroy',[CategoryController::class,'multiDestroy'])->name('category.multiDestroy');
     Route::post('/category/multitrashdelete',[CategoryController::class,'multiTrashDelete'])->name('category.multiTrashDelete');
     Route::post('/category/multirestore',[CategoryController::class,'multiRestore'])->name('category.multiRestore');
-
+    Route::post('/message/search',[MessageController::class,'search']);
+    Route::post('/message/get/image/user',[MessageController::class,'getImageUser']);
+    Route::post('/message/multi/send',[MessageController::class,'multiSend']);
     /*  Delete routes   */
     Route::delete('/post/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
     Route::delete('/category/trash/{id}',[CategoryController::class,'trashDelete'])->name('category.trashDelete');

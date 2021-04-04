@@ -1081,7 +1081,6 @@
 <script src="{{ asset('assets/frontend/js/jquery.ez-plus.js') }}"></script>
 <script src="{{ asset('assets/frontend/js/vendor.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/js/app-html.js') }}"></script>
-<script src="{{ asset('assets/frontend/js/require.js') }}"></script>
 @yield('footer')
 </body>
 </html>

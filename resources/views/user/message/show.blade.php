@@ -1,5 +1,6 @@
 @extends('layouts.backend.main')
 
+
 @section('content')
 <div class="page-content">
     <!-- Start content -->
@@ -8,12 +9,12 @@
 <div class="row">
 <div class="col-12">
 <div class="page-title-box d-flex align-items-center justify-content-between">
-<h4 class="mb-0">Inbox</h4>
+<h4 class="mb-0">Read Email</h4>
 
 <div class="page-title-right">
     <ol class="breadcrumb m-0">
         <li class="breadcrumb-item"><a href="javascript: void(0);">Email</a></li>
-        <li class="breadcrumb-item active">Inbox</li>
+        <li class="breadcrumb-item active">Read Email</li>
     </ol>
 </div>
 
@@ -25,9 +26,9 @@
 <div class="col-12">
 <!-- Left sidebar -->
 <div class="email-leftbar card">
-    <a href="{{ route('message.create') }}" class="btn btn-danger btn-block waves-effect waves-light">
+    <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#composemodal">
         جدید
-    </a>
+    </button>
     <div class="mail-list mt-4">
         <a href="#" class="active"><i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> صندوق ورودی
             <span class="ms-1 float-end">(18)</span></a>
@@ -37,7 +38,6 @@
         <a href="#"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>ارسال شده</a>
         <a href="#"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان</a>
     </div>
-
 
     <h6 class="mt-4">Labels</h6>
 
@@ -88,7 +88,6 @@
 </div>
 <!-- End Left sidebar -->
 
-
 <!-- Right Sidebar -->
 <div class="email-rightbar mb-3">
 
@@ -133,50 +132,71 @@
                 </div>
             </div>
         </div>
-        <ul class="message-list">
-            @if ($messages->count() > 0)
-                
-                @foreach ($messages as $message)
-                <li>
-                    <div class="col-mail col-mail-1">
-                        <div class="checkbox-wrapper-mail">
-                            <input type="checkbox" id="chk19">
-                            <label for="chk19" class="toggle"></label>
-                        </div>
-                        <a href="{{ route('message.show',$message->id) }}" class="title"> <img width="50px" src="{{ $message->user->image ? '/' . $message->user->image->url : '/storage/images/man-avatar.jfif' }}" alt="">
-                            {{ $message->user->name }} 
-                        </a><span class="star-toggle far fa-star"></span>
-                    </div>
-                    <div class="col-mail col-mail-2">
-                        <a href="{{ route('message.show',$message->id) }}" class="subject"><span class="teaser">{!! $message->body !!}</span>
-                        </a>
-                        <div class="date">{{ $message->created_at }}</div>
-                    </div>
-                </li>
-                @endforeach
-            @else
-                <h4 class="text-center">پیامی وجود ندارد!</h4>
-            @endif
-        </ul>
 
-    </div> <!-- card -->
-
-    <div class="row">
-        <div class="col-7">
-            Showing 1 - 20 of 1,524
-        </div>
-        <div class="col-5">
-            <div class="btn-group float-end">
-                <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-left"></i></button>
-                <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-right"></i></button>
+        <div class="card-body">
+            @include('messages')
+            <div class="d-flex align-items-start mb-4">
+                <img class="d-flex me-3 rounded-circle avatar-sm" src="{{ $message->user->image ? '/' . $message->user->image->url : '/storage/images/man-avatar.jfif' }}" alt="Generic placeholder image">
+                <div class="flex-1">
+                    <h5 class="font-size-14 my-1">{{ $message->user->name }}</h5>
+                    <small class="text-muted">support@domain.com</small>
+                </div>
             </div>
+
+            <p>{!! $message->body !!}
+            </p>
+           
+            <hr>
+
+            <div class="row">
+                <div class="col-xl-2 col-6">
+                    <div class="card border shadow-none">
+                        <img class="card-img-top img-fluid" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/small/img-3.jpg" alt="Card image cap">
+                        <div class="py-2 text-center">
+                            <a href="" class="fw-medium">Download</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-6">
+                    <div class="card border shadow-none">
+                        <img class="card-img-top img-fluid" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/small/img-4.jpg" alt="Card image cap">
+                        <div class="py-2 text-center">
+                            <a href="" class="fw-medium">Download</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form action="{{ route('message.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="id" value="{{ $message->from }}">
+                <textarea name="body" id="editor" cols="30" rows="10"></textarea>
+            
+                <button type="submit" class="btn btn-secondary waves-effect mt-4"><i class="mdi mdi-reply"></i> ارسال پاسخ</button>
+            </form>
         </div>
     </div>
-
-</div> <!-- end Col-9 -->
+</div>
+<!-- card -->
 
 </div>
+<!-- end Col-9 -->
 
-</div><!-- End row -->
+</div>
+<!-- end row -->
 
+@endsection
+
+@section('footer')
+    <script>
+        
+        ClassicEditor
+        .create( document.querySelector( '#editor' ), {
+            language:'fa',
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+
+    </script>
 @endsection

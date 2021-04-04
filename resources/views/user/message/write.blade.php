@@ -133,24 +133,23 @@
         </div>
 
         <div class="card-body">
-            <div class="d-flex align-items-start mb-4">
-                <img class="d-flex me-3 rounded-circle avatar-sm" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/users/avatar-2.jpg" alt="Generic placeholder image">
-                <div class="flex-1">
-                    <h5 class="font-size-14 my-1">Humberto D. Champion</h5>
-                    <small class="text-muted">support@domain.com</small>
-                </div>
+            @include('messages')
+            <h5>ارسال به</h5>
+            <div class="d-flex align-items-start mb-4" id="listOfSearch">
+              
             </div>
-            <form action="">
+          
                 <div class="mb-3">
-                    <label for="to">ارسال به</label>
-                    <input type="text" name="to" id="search" class="form-control" onchange="searchHandler()">
+                    <input type="text" name="to" id="search" class="form-control">
+                    <span id="selector">
+                    </span>
                 </div>
                 <div class="mb-3">
                     <textarea name="body" id="editor" cols="30" rows="10"></textarea>
                 </div>
                 <hr>
-                  <a href="" class="btn btn-primary waves-effect mt-4"><i class="mdi mdi-reply"></i> Send</a>
-                </form>
+                  <button onclick="sendMessage()" class="btn btn-primary waves-effect mt-4"><i class="mdi mdi-reply"></i> Send</button>
+               
 
         </div>
 
@@ -199,13 +198,21 @@
 </div>
     </div> <!-- content -->
 </div>
+
 @endsection
 
 
 @section('footer')
 <script>
+    let selector;
+    let ids = [];
     var delay = (function(){
     var timer = 0;
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
     return function(callback, ms){
     clearTimeout (timer);
     timer = setTimeout(callback, ms);
@@ -213,23 +220,110 @@
     })();
 
     $('#search').keyup(function() {
-        const that = $(this);
+        const search = $(this).val();
+       
     delay(function(){
-        console.log(that.val());
+        if(search.length >= 3) {
+            document.getElementById('selector').innerHTML = '';
+        
+            $.ajax({
+                url: '/message/search',
+                type: "post",
+                data: {search},
+                success:function(res) {
+                    
+                    if(res.users.length > 0) {
+                        selector = `<select 
+                        class="form-select" 
+                        multiple 
+                        onchange="selectorHandler()"
+                        id="selectorInput"
+                        >
+                            ${res.users.map(user => {
+                                
+                                return "<option value='" + user.id + "'>" + user.name + "</option>"
+                            })}
+                        </select>`;
+                    } else {
+                        selector = "<h5 class='text-danger'>کاربری با این اسم وجود ندارد!</h5>"
+                    }
+                    
+                    
+                    
+                    $('#selector').append(selector);
+                },error:function(e) {
+                    selector = "<div class='alert alert-danger'>خطا! دوباره تلاش کنید</div>"
+                    $('#selector').append(selector);
+
+                },
+            });
+        } else {
+            document.getElementById('selector').innerHTML = "<h5 class='text-danger'>بیشتر از دو حرف مورد نیاز است</h5>";
+        }
+       
     }, 1000 );
     });
 
-    ClassicEditor
-               .create( document.querySelector( '#editor' ), {
-                 language: 'fa'
-               } )
-               .catch( error => {
-                   console.error( error );
-               } );
-
-
-    const searchHandler = () => {
-        
+    const selectorHandler = () => {
+        // event select tag html
+        const e = document.getElementById('selectorInput');
+        let id = e.value;  
+        let name = e.options[e.selectedIndex].text; // inner html of select tag
+        let imageUrl;
+        let form;
+        const index = ids.indexOf(String(id));
+            if(index > -1) {
+                ids.splice(index,1);
+                document.getElementById(`user${id}`).remove();
+            } else {
+                ids.push(String(id));
+                $.ajax({
+                    url: '/message/get/image/user',
+                    type : 'POST',
+                    data: {id},
+                    success:function(res) {
+                        imageUrl = res.url;
+                        form = `<div id='user${id}'>
+                                    <img class="d-flex me-3 rounded-circle avatar-sm" src="/${imageUrl}" alt="user image">
+                                    <div class="flex-1">
+                                        <h5 class="font-size-14 my-1">${name}</h5>
+                                    </div>
+                                </div>`
+                        document.getElementById('listOfSearch').innerHTML += form;
+                    },error:function(err) {
+                        form = "<div class='alert alert-danger'>خطا! دوباره تلاش کنید</div>";
+                        document.getElementById('listOfSearch').innerHTML = form;
+                    },
+                });
+            }
     }
+
+
+    ClassicEditor
+        .create( document.querySelector( '#editor' ), {
+            language: 'fa'
+        } ).then(editor => {
+            myeditor = editor;
+        })
+        .catch( error => {
+            console.error( error );
+        } );
+
+    const sendMessage = () => {
+        let body = myeditor.getData();
+        $.ajax({
+            url: '/message/multi/send',
+            type: 'post',
+            data: {ids,body},
+            success:function(res) {
+                location.reload();
+            },error:function(err) {
+                console.log(err)
+            },
+        });
+    }
+  
    </script>
+
+
 @endsection
