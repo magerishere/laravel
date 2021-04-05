@@ -22,6 +22,7 @@ class MessageController extends Controller
     {
         $value = 10;
         $search = '';
+      
         /* Pagination handler */
         if(isset($_GET['value']))
         {
@@ -33,8 +34,11 @@ class MessageController extends Controller
         {
             $search = $_GET['search'];
         }
+
+
         $userId = Auth::id();
         $messages = Message::orderByDesc('id')->where('to',$userId)->paginate($value);
+        Redis::zAdd('messages',$messages->total(),"messageCount:user:$userId");
         $messages->withPath('/message?search=' . $search . '&value=' . $value);
         return view('user.message.index',compact('messages'));
     }
@@ -167,6 +171,8 @@ class MessageController extends Controller
         Session::flash('message','پیام شما ارسال شد!');
     }
 
+
+    /* For update message to important/unimportant */
     public function important(Request $request)
     {
         if(Redis::zScore('messages',"message:$request->id:important")) 

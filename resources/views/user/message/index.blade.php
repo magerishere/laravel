@@ -24,67 +24,7 @@
 <div class="row">
 <div class="col-12">
 <!-- Left sidebar -->
-<div class="email-leftbar card">
-    <a href="{{ route('message.create') }}" class="btn btn-danger btn-block waves-effect waves-light">
-        جدید
-    </a>
-    <div class="mail-list mt-4">
-        <a href="#" class="active"><i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> صندوق ورودی
-            <span class="ms-1 float-end">(18)</span></a>
-        <a href="#"><i class="mdi mdi-star-outline font-size-16 align-middle me-2"></i>مهم</a>
-        <a href="#"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>پیش نویس</a>
-        <a href="#"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>ارسال شده</a>
-        <a href="#"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان</a>
-    </div>
-
-
-    <h6 class="mt-4">Labels</h6>
-
-    <div class="mail-list mt-1">
-        <a href="#"><span class="mdi mdi-circle-outline text-info float-end"></span>Theme Support</a>
-        <a href="#"><span class="mdi mdi-circle-outline text-warning float-end"></span>Freelance</a>
-        <a href="#"><span class="mdi mdi-circle-outline text-primary float-end"></span>Social</a>
-        <a href="#"><span class="mdi mdi-circle-outline text-danger float-end"></span>Friends</a>
-        <a href="#"><span class="mdi mdi-circle-outline text-success float-end"></span>Family</a>
-    </div>
-
-    <h6 class="mt-4">Chat</h6>
-
-    <div class="mt-2">
-        <a href="#" class="d-flex align-items-start">
-            <img class="d-flex me-3 rounded-circle" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/users/avatar-2.jpg" alt="Generic placeholder image" height="36">
-            <div class="flex-1 chat-user-box overflow-hidden">
-                <p class="user-title m-0">Scott Median</p>
-                <p class="text-muted text-truncate">Hello</p>
-            </div>
-        </a>
-
-        <a href="#" class="d-flex align-items-start">
-            <img class="d-flex me-3 rounded-circle" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/users/avatar-3.jpg" alt="Generic placeholder image" height="36">
-            <div class="flex-1 chat-user-box overflow-hidden">
-                <p class="user-title m-0">Julian Rosa</p>
-                <p class="text-muted text-truncate">What about our next..</p>
-            </div>
-        </a>
-
-        <a href="#" class="d-flex align-items-start">
-            <img class="d-flex me-3 rounded-circle" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/users/avatar-4.jpg" alt="Generic placeholder image" height="36">
-            <div class="flex-1 chat-user-box overflow-hidden">
-                <p class="user-title m-0">David Medina</p>
-                <p class="text-muted text-truncate">Yeah everything is fine</p>
-            </div>
-        </a>
-
-        <a href="#" class="d-flex align-items-start">
-            <img class="d-flex me-3 rounded-circle" src="http://minible-h-rtl.laravel.themesbrand.com/assets/images/users/avatar-6.jpg" alt="Generic placeholder image" height="36">
-            <div class="flex-1 chat-user-box overflow-hidden">
-                <p class="user-title m-0">Jay Baker</p>
-                <p class="text-muted text-truncate">Wow that's great</p>
-            </div>
-        </a>
-
-    </div>
-</div>
+@include('user.message.sidebar')
 <!-- End Left sidebar -->
 
 
@@ -92,23 +32,46 @@
 <div class="email-rightbar mb-3">
 
     <div class="card">
-        <div class="btn-toolbar p-3" role="toolbar">
-            <div class="btn-group me-2 mb-2 mb-sm-0">
-                <button type="button" id="deleteAllSelectorBtn" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" disabled> 
-                    بیشتر <i class="mdi mdi-dots-vertical ms-2"></i>
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#" onclick="multiUnread()">تبدیل به  پیام خوانده نشده <i class="fa fa-eye"></i></a>
-                    <a class="dropdown-item" href="#" onclick="multiImportant()">تبدیل به پیام مهم <i class="fa fa-star-o"></i></a>
-                    <a class="dropdown-item" href="#" onclick="deleteAllSelector()">انتقال به زباله دان <i class="fa fa-trash-o"></i></a>
-                 
+        <div class="row">
+
+            <div class="btn-toolbar p-3 col-md-3" role="toolbar">
+                <div class="btn-group me-2 mb-2 mb-sm-0">
+                        <button type="button" id="deleteAllSelectorBtn" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" disabled> 
+                        بیشتر <i class="mdi mdi-dots-vertical ms-2"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" onclick="multiUnread()">تبدیل به  پیام خوانده نشده <i class="fa fa-eye"></i></a>
+                        <a class="dropdown-item" href="#" onclick="multiImportant()">تبدیل به پیام مهم <i class="fa fa-star"></i></a>
+                        <a class="dropdown-item" href="#" onclick="deleteAllSelector()">انتقال به زباله دان <i class="fa fa-trash-o"></i></a>
+                    </div>
                 </div>
-                <div id="atLeastOneError"></div>
             </div>
-            
+
+            <div class="col-md-6">
+                <div id="atLeastOneError"></div>
+                @include('messages')
+                <div id="multiDestroyMessage" class="alert alert-danger text-center"  style="display: none"> مشکلی پیش آمد! دوباره تلاش کنید</div>
+            </div>
+            <div class="col-md-3">
+                <div class="btn-toolbar p-3" role="toolbar">
+                    <div class="btn-group me-2 mb-2 mb-sm-0">
+                        <button type="button" id="deleteAllSelectorBtn" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"> 
+                            فیلتر <i class="mdi mdi-dots-vertical ms-2"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('all')">همه</a>
+                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('new')">فقط پیام های <span><small class="text-danger">جدید</small></span></a>
+                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('important')">فقط پیام های مهم <i class="fa fa-star"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('notImportant')">فقط پیام های غیر مهم <i class="fa fa-star-o"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('seen')">فقط پیام های دیده شده <i class="fa fa-envelope-open-o"></i></a>
+                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('unseen')">فقط پیام های دیده نشده <i class="fa fa-envelope"></i></a>
+                        </div>
+                        <div id="atLeastOneError"></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        @include('messages')
-        <div id="multiDestroyMessage" class="alert alert-danger text-center"  style="display: none"> مشکلی پیش آمد! دوباره تلاش کنید</div>
+      
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -122,48 +85,53 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($messages as $message)
-                <tr>
-                    <td class="text-center align-middle"> 
-                        <input type="checkbox" name="checkBox[]" value="{{ $message->id }}" onclick="checkBoxHandler({{ $message->id }})">
-                    </td>
-                    <td>
-                        @if (Redis::zScore('messages',"message:$message->id:important"))
-                            <a href="javascript: void(0)"><i data-value="{{ $message->id }}" class="fa fa-star"></i> </a>
-                        @else    
-                           <a href="javascript: void(0)"><i  data-value="{{ $message->id }}" class="fa fa-star-o"></i> </a>
-                        @endif
-                        @if ($message->created_at->isToday())
-                            @if (!Redis::zScore('messages',"message:$message->id:read"))
-                                <span class="text-danger">New</span>   
+                @foreach ($messages as $message)   
+                    <tr>
+                        <td class="text-center align-middle"> 
+                            <input type="checkbox" name="checkBox[]" value="{{ $message->id }}" onclick="checkBoxHandler({{ $message->id }})">
+                        </td>
+                        <td>
+                            @if (Redis::zScore('messages',"message:$message->id:important"))
+                                <a href="javascript: void(0)"><i data-value="{{ $message->id }}" class="fa fa-star"></i> </a>
+                            @else
+                                <a href="javascript: void(0)"><i  data-value="{{ $message->id }}" class="fa fa-star-o"></i> </a>
                             @endif
-                        @endif
-                    </td>
-                    <td class="text-center align-middle">
-                        <img width="40px" src="{{ $message->user->image ? '/' . $message->user->image->url : '/storage/images/man-avatar.jfif' }}" alt="Image user">
-                     
-                    </td>
-                    <td class="text-center align-middle">{{ $message->user->name }}</td>
-                    <td class="text-center align-middle">{!! Str::limit($message->body,30)  !!}</td>
-                    <td class="text-center align-middle">
-                        <div class="currentDate" style="display: none">
-                            {{ \Morilog\Jalali\Jalalian::fromCarbon($message->created_at)->format('Y/m/d') }}
-                        </div>
-                        <div class="diffForHumans">
-                            {{ $message->created_at->diffForHumans() }}
-                        </div>
-                    </td>
-                    <td class="text-center align-middle">
+                            @if ($message->created_at->isToday())
+                                @if (!Redis::zScore('messages',"message:$message->id:read"))
+                                    <span class="text-danger"><small class="fa-new">جدید</small></span>
+                                @else   
+                                    <span class="text-danger"><small class="fa-old"><small></span>
+                                @endif
+                            @endif
+                        </td>
+                        <td class="text-center align-middle">
+                            <img width="40px" src="{{ $message->user->image ? '/' . $message->user->image->url : '/storage/images/man-avatar.jfif' }}" alt="Image user">
+                        
+                        </td>
+                        <td class="text-center align-middle">{{ $message->user->name }}</td>
+                        <td class="text-center align-middle">{!! Str::limit($message->body,30)  !!}</td>
+                        <td class="text-center align-middle">
+                            <div class="currentDate" style="display: none">
+                                {{ \Morilog\Jalali\Jalalian::fromCarbon($message->created_at)->format('Y/m/d') }}
+                            </div>
+                            <div class="diffForHumans">
+                                {{ $message->created_at->diffForHumans() }}
+                            </div>
+                        </td>
+                        <td class="text-center align-middle">
 
-                        @if (Redis::zScore('messages',"message:$message->id:read"))
-                            <i class="fa fa-eye-slash"></i>
-                        @else
-                            <a href="{{ route('message.show',$message->id) }}" class="btn btn-primary">
-                                <i class="fa fa-eye"></i>
-                            </a>
-                        @endif
-                    </td>
-                </tr>
+                            @if (Redis::zScore('messages',"message:$message->id:read"))
+                                <a href="{{ route('message.show',$message->id) }}">
+                                    <i class="fa fa-envelope-open-o" aria-hidden="true" style="font-size: 25px"></i>
+                                </a>
+                            @else
+                                <a href="{{ route('message.show',$message->id) }}">
+                                    <i class="fa fa-envelope" aria-hidden="true" style="font-size: 25px"></i>
+                                </a>
+                            @endif
+                        </td>
+                    </tr>        
+
                 @endforeach
 
             </tbody>
@@ -204,6 +172,7 @@
                 data: {id},
                 success:function(res) {
                     that.toggleClass('fa-star-o');
+                    that.toggleClass('fa-star');
                 },error:function(err) {
                     document.getElementById('atLeastOneError').innerHTML = "<h5 class='text-danger'>خطا! دوباره تلاش کنید</h5>";
                 },
@@ -217,6 +186,7 @@
                 type: 'post',
                 data: {id},
                 success:function(res) {
+                    that.toggleClass('fa-star-o');
                     that.toggleClass('fa-star');
                 },error:function(err) {
                     document.getElementById('atLeastOneError').innerHTML = "<h5 class='text-danger'>خطا! دوباره تلاش کنید</h5>";
@@ -375,6 +345,48 @@
                     document.getElementById('atLeastOneError').innerHTML = "<h5 class='text-danger'>خطا! دوباره تلاش کنید</h5>";
                 },
             });
+        }
+
+        const filterMessage = (value) => {
+            // font awesome icons
+            let faStar = $('.fa-star');
+            let faStarO = $('.fa-star-o');
+            let faEnvelope = $('.fa-envelope');
+            let faEnvelopeOpen = $('.fa-envelope-open-o');
+            let faNew = $('.fa-new');
+            let faOld = $('.fa-old');
+            let oldFilter;
+            let newFilter;
+            // Filter just show important message and hide not important message!
+            if(value == 'important') {
+                oldFilter = faStar.parent().parent().parent();
+                newFilter = faStarO.parent().parent().parent();
+            }
+             // Filter just show not important message and hide message important message!
+            if(value == 'notImportant') {
+                oldFilter = faStarO.parent().parent().parent();
+                newFilter = faStar.parent().parent().parent();
+            }
+            // Filter just show seen message and hide unseen message!;
+            if(value == 'seen') {
+                oldFilter = faEnvelopeOpen.parent().parent().parent(); 
+                newFilter = faEnvelope.parent().parent().parent(); 
+            }
+            if(value == 'unseen') {
+                oldFilter = faEnvelope.parent().parent().parent(); 
+                newFilter = faEnvelopeOpen.parent().parent().parent();  
+            }
+            if(value == 'new') {
+                oldFilter = faNew.parent().parent().parent(); 
+                newFilter = faOld.parent().parent().parent();  
+            }
+            if(value == 'all') {
+                $('tr').show();
+            }
+            if(oldFilter && newFilter) {
+                oldFilter.closest("tr").show(); // filtered of show
+                newFilter.closest("tr").hide(); // filtered of hide
+            }
         }
 
     </script>
