@@ -1081,6 +1081,13 @@
 <script src="{{ asset('assets/frontend/js/jquery.ez-plus.js') }}"></script>
 <script src="{{ asset('assets/frontend/js/vendor.min.js') }}"></script>
 <script src="{{ asset('assets/frontend/js/app-html.js') }}"></script>
+<script>
+	$.ajaxSetup({
+		headers: {
+		  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+</script>
 @yield('footer')
 </body>
 </html>

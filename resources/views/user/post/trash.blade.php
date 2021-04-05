@@ -124,11 +124,7 @@
         }
 
         const multiDestroy = () => {
-            $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+   
                 if(ids.length > 0) 
                 {
                     Swal.fire({

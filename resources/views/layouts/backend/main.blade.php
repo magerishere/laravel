@@ -569,6 +569,24 @@
 
               <li>
                 <a href="javascript: void(0);" class="has-arrow waves-effect">
+                  <i class="uil-store"></i>
+                  <span>پیام</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                  <li><a href="{{ route('message.index') }}">نمایش همه</a></li>
+                  <li><a href="{{ route('message.create') }}">جدید</a></li>
+                  <li><a href="{{ route('category.trash') }}">زباله دان</a></li>
+                  <li><a href="ecommerce-orders">Orders</a></li>
+                  <li><a href="ecommerce-customers">Customers</a></li>
+                  <li><a href="ecommerce-cart">Cart</a></li>
+                  <li><a href="ecommerce-checkout">Checkout</a></li>
+                  <li><a href="ecommerce-shops">Shops</a></li>
+                  <li><a href="ecommerce-add-product">Add Product</a></li>
+                </ul>
+              </li>
+
+              <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
                   <i class="uil-window-section"></i>
                   <span>Layouts</span>
                 </a>
@@ -976,7 +994,13 @@
     <script src="{{ asset('assets/backend/js/ckeditor.js') }}"></script>
     <script src="{{ asset('assets/backend/js/fa.js') }}"></script>
     <script src="{{ asset('assets/backend/js/sweet-alert.js') }}"></script>
-
+    <script>
+        $.ajaxSetup({
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
     @yield('footer')
   </body>
 </html>

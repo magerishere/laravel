@@ -20,8 +20,6 @@ class PostController extends Controller
      */
     public function index()
     {
-       
-
         $value = 10;
         $search = '';
         /* Pagination handler */

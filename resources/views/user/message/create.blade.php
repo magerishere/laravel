@@ -26,16 +26,16 @@
 <!-- Left sidebar -->
 <div class="email-leftbar card">
     <button type="button" class="btn btn-danger btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#composemodal">
-        Compose
+        جدید
     </button>
     <div class="mail-list mt-4">
-        <a href="#" class="active"><i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> Inbox
+        <a href="#" class="active"><i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> صندوق ورودی
             <span class="ms-1 float-end">(18)</span></a>
-        <a href="#"><i class="mdi mdi-star-outline font-size-16 align-middle me-2"></i>Starred</a>
-        <a href="#"><i class="mdi mdi-diamond-stone font-size-16 align-middle me-2"></i>Important</a>
-        <a href="#"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>Draft</a>
-        <a href="#"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>Sent Mail</a>
-        <a href="#"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>Trash</a>
+        <a href="#"><i class="mdi mdi-star-outline font-size-16 align-middle me-2"></i>نشانک</a>
+        <a href="#"><i class="mdi mdi-diamond-stone font-size-16 align-middle me-2"></i>مهم</a>
+        <a href="#"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>پیش نویس</a>
+        <a href="#"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>ارسال شده</a>
+        <a href="#"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان</a>
     </div>
 
     <h6 class="mt-4">Labels</h6>
@@ -122,6 +122,7 @@
                 <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     More <i class="mdi mdi-dots-vertical ms-2"></i>
                 </button>
+              
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="#">Mark as Unread</a>
                     <a class="dropdown-item" href="#">Mark as Important</a>
@@ -131,6 +132,7 @@
                 </div>
             </div>
         </div>
+        <div id="noSelectedUserError"></div>
 
         <div class="card-body">
             @include('messages')
@@ -148,7 +150,8 @@
                     <textarea name="body" id="editor" cols="30" rows="10"></textarea>
                 </div>
                 <hr>
-                  <button onclick="sendMessage()" class="btn btn-primary waves-effect mt-4"><i class="mdi mdi-reply"></i> Send</button>
+                  <button onclick="sendMessage()" class="btn btn-primary waves-effect mt-4"><i class="mdi mdi-reply"></i> Send </button>
+                  <span>  <div id="emptyMessageBodyError"></div> </span>
                
 
         </div>
@@ -204,15 +207,12 @@
 
 @section('footer')
 <script>
+    
     let selector;
     let ids = [];
     var delay = (function(){
     var timer = 0;
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+
     return function(callback, ms){
     clearTimeout (timer);
     timer = setTimeout(callback, ms);
@@ -277,6 +277,7 @@
                 document.getElementById(`user${id}`).remove();
             } else {
                 ids.push(String(id));
+                document.getElementById('noSelectedUserError').innerHTML = '';
                 $.ajax({
                     url: '/message/get/image/user',
                     type : 'POST',
@@ -311,16 +312,28 @@
 
     const sendMessage = () => {
         let body = myeditor.getData();
-        $.ajax({
-            url: '/message/multi/send',
-            type: 'post',
-            data: {ids,body},
-            success:function(res) {
-                location.reload();
-            },error:function(err) {
-                console.log(err)
-            },
-        });
+        if(body.length > 0 && ids.length > 0) {
+            $.ajax({
+                url: '/message/multi/send',
+                type: 'post',
+                data: {ids,body},
+                success:function(res) {
+                    location.reload();
+                },error:function(err) {
+                    console.log(err)
+                },
+            });
+        } else {
+            if(body.length == 0) {
+                form = "<div class='alert alert-danger text-center col-md-6 mx-auto'>متن پیام شما خالیست!</div>";
+                document.getElementById('emptyMessageBodyError').innerHTML = form;     
+
+            }
+            if(ids.length == 0) {
+                form = "<div class='alert alert-danger text-center col-md-6 mx-auto'>دریافت کننده ای انتخاب نکردید!</div>";
+                document.getElementById('noSelectedUserError').innerHTML = form;     
+            }
+        }
     }
   
    </script>

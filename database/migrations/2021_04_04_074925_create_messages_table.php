@@ -18,8 +18,8 @@ class CreateMessagesTable extends Migration
             $table->tinyInteger('from');
             $table->tinyInteger('to');
             $table->text('body');
-            $table->boolean('read')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

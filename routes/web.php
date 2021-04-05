@@ -40,9 +40,13 @@ Route::middleware('auth')->group(function() {
     Route::post('/category/multidestroy',[CategoryController::class,'multiDestroy'])->name('category.multiDestroy');
     Route::post('/category/multitrashdelete',[CategoryController::class,'multiTrashDelete'])->name('category.multiTrashDelete');
     Route::post('/category/multirestore',[CategoryController::class,'multiRestore'])->name('category.multiRestore');
-    Route::post('/message/search',[MessageController::class,'search']);
-    Route::post('/message/get/image/user',[MessageController::class,'getImageUser']);
-    Route::post('/message/multi/send',[MessageController::class,'multiSend']);
+    Route::post('/message/multidestroy',[MessageController::class,'multiDestroy'])->name('message.multiDestroy');
+    Route::post('/message/multi/unread',[MessageController::class,'multiUnread'])->name('message.multiUnread');
+    Route::post('/message/important',[MessageController::class,'important'])->name('message.important');
+    Route::post('/message/multi/important',[MessageController::class,'multiImportant'])->name('message.multiImportant');
+    Route::post('/message/search',[MessageController::class,'search'])->name('message.serach');
+    Route::post('/message/get/image/user',[MessageController::class,'getImageUser'])->name('message.getImageUser');
+    Route::post('/message/multi/send',[MessageController::class,'multiSend'])->name('message.multiSend');
     /*  Delete routes   */
     Route::delete('/post/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
     Route::delete('/category/trash/{id}',[CategoryController::class,'trashDelete'])->name('category.trashDelete');

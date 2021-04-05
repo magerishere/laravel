@@ -94,6 +94,7 @@
     let ids = [];
     let run = false;
     let basicData = false;
+
         const checkBoxHandler = (id) => {
             const index = ids.indexOf(String(id));
             if(index > -1) {
@@ -135,11 +136,7 @@
 
         const multiDestroy = () => {
             
-            $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+    
                 if(ids.length > 0) 
                 {
 
@@ -172,12 +169,7 @@
             }
 
             const multiRestore = () => {
-            
-            $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
+    
                 if(ids.length > 0) 
                 {
                     Swal.fire({
