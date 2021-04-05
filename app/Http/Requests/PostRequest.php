@@ -37,7 +37,8 @@ class PostRequest extends FormRequest
             'title.required'=>'عنوان مطلب',
             'name.required'=> 'دسته بندی',
             'url.mimes'=> 'عکس فقط با فرمت jpg,png,jpeg',
-            'description.required' => 'توضیحات مطلب'
+            'description.required' => 'توضیحات مطلب',
+            'description.min' => 'توضیحات مطلب بیشتر از 20 کاراکتر',
         ];
     }
 }

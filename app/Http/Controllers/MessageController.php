@@ -22,22 +22,29 @@ class MessageController extends Controller
     {
         $value = 10;
         $search = '';
-      
         /* Pagination handler */
         if(isset($_GET['value']))
         {
             $value = $_GET['value'] > 100 ? 100 : $_GET['value'];
         }
 
+       
         /* Search handler */
         if(isset($_GET['search']))
         {
             $search = $_GET['search'];
         }
 
-
         $userId = Auth::id();
-        $messages = Message::orderByDesc('id')->where('to',$userId)->paginate($value);
+        $messages = Message::orderByDesc('id')->where('to',$userId)->whereHas('User',function($query) {
+            $search = '';
+        /* Search handler */
+        if(isset($_GET['search']))
+        {
+            $search = $_GET['search'];
+        }
+            $query->where('name','like','%' . $search . '%');
+        })->paginate($value);
         Redis::zAdd('messages',$messages->total(),"messageCount:user:$userId");
         $messages->withPath('/message?search=' . $search . '&value=' . $value);
         return view('user.message.index',compact('messages'));
@@ -117,7 +124,9 @@ class MessageController extends Controller
      */
     public function destroy(Message $message)
     {
-        //
+        $message->delete();
+        return back()
+            ->with('error','پیام به زباله دان انتقال داده شد!');
     }
 
     public function multiDestroy(Request $request)
@@ -128,7 +137,7 @@ class MessageController extends Controller
             $message->delete();
         }
 
-        Session::flash('error','پیام های انتخاب شده حذف شدند!'); /* Session error for set background red! */     
+        Session::flash('error','پیام های انتخاب شده به زباله دان انتقال داده شدند!'); /* Session error for set background red! */     
     }
     
     public function multiUnread(Request $request)
@@ -191,5 +200,30 @@ class MessageController extends Controller
             Redis::zAdd('messages',1,"message:$id:important");
         }
         Session::flash('message','پیام های انتخاب شده به پیام مهم تبدیل شدند!');
+    }
+
+    public function trash() 
+    {
+        
+        $userId = Auth::id();
+        $messages = Message::where('to',$userId)->onlyTrashed()->get();
+        return view('user.message.trash',compact('messages'));
+
+    }
+
+    public function restore($id) 
+    {
+      $message =  Message::onlyTrashed()->where('id',$id)->first();
+      $message->restore();
+        return back()
+            ->with('message','پیام بازگردانی شد!');
+    }
+
+    public function trashDelete($id)
+    {
+        $message = Message::onlyTrashed()->where('id',$id)->first();
+        $message->forceDelete();
+        return back()
+            ->with('error','پیام حذف شد!');
     }
 }

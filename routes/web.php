@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function() {
     /*  Delete routes   */
     Route::delete('/post/trash/{id}',[PostController::class,'trashDelete'])->name('post.trashDelete');
     Route::delete('/category/trash/{id}',[CategoryController::class,'trashDelete'])->name('category.trashDelete');
+    Route::delete('/message/trash/{id}',[MessageController::class,'trashDelete'])->name('message.trashDelete');
 
     /*  Get routes   */
     Route::get('/post/restore/trash/{id}',[PostController::class,'restore'])->name('post.restore');
@@ -57,6 +58,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
     Route::get('/category/all/trash',[CategoryController::class,'trash'])->name('category.trash');
     Route::get('/category/parent/{id}',[CategoryController::class,'parent'])->name('category.parent');
+    Route::get('/message/restore/trash/{id}',[MessageController::class,'restore'])->name('message.restore');
+    Route::get('/message/all/trash',[MessageController::class,'trash'])->name('message.trash');
     Route::get('/dashboard',function(){
         return view('user.dashboard');
     })->name('user.dashboard');

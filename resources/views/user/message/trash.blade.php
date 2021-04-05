@@ -57,32 +57,17 @@
                             <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('new')">فقط پیام های <span><small class="text-danger">جدید</small></span></a>
                             <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('important')">فقط پیام های مهم <i class="fa fa-star"></i></a>
                             <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('notImportant')">فقط پیام های غیر مهم <i class="fa fa-star-o"></i></a>
-                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('seen')">فقط پیام های دیده شده <i class="fa fa-envelope-open-o"></i></a>
-                            <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('unseen')">فقط پیام های دیده نشده <i class="fa fa-envelope"></i></a>
                         </div>
-                        <div id="atLeastOneError"></div>
                     </div>
                 </div>
             </div>
-           
-            <div class="col-md-4">
 
+            <div class="col-md-4">
                 <div id="atLeastOneError"></div>
                 @include('messages')
                 <div id="multiDestroyMessage" class="alert alert-danger text-center"  style="display: none"> مشکلی پیش آمد! دوباره تلاش کنید</div>
             </div>
-
-            <div class="col-md-4 mt-3">
-                <div class="input-group">
-                    <div class="form-outline">
-                        <input type="search" id="search" class="form-control" placeholder="جستجو نام ..." />  
-                    </div>
-                    <button type="button" onclick="searchHandler()" class="btn btn-primary">
-                        <i class="fa fa-search"></i>
-                    </button>
-                 
-                </div>
-            </div>
+          
         </div>
       
         <table class="table table-hover">
@@ -94,13 +79,13 @@
                     <th class="text-center align-middle">نام</th>
                     <th class="text-center align-middle">پیام</th>
                     <th class="text-center align-middle">تاریخ ارسال <i class="fa fa-history btn btn-info" onclick="changeDateHandler()"></i></th>
-                    <th class="text-center align-middle">مشاهده</th>
+                    <th class="text-center align-middle">بازگردانی</th>
                     <th class="text-center align-middle">حذف</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($messages as $message)   
-                    <tr>
+                    <tr class="alert-danger">
                         <td class="text-center align-middle"> 
                             <input type="checkbox" name="checkBox[]" value="{{ $message->id }}" onclick="checkBoxHandler({{ $message->id }})">
                         </td>
@@ -133,33 +118,23 @@
                             </div>
                         </td>
                         <td class="text-center align-middle">
-
-                            @if (Redis::zScore('messages',"message:$message->id:read"))
-                                <a href="{{ route('message.show',$message->id) }}">
-                                    <i class="fa fa-envelope-open-o" aria-hidden="true" style="font-size: 25px"></i>
-                                </a>
-                            @else
-                                <a href="{{ route('message.show',$message->id) }}">
-                                    <i class="fa fa-envelope" aria-hidden="true" style="font-size: 25px"></i>
-                                </a>
-                            @endif
+                            <a href="{{ route('message.restore',$message->id) }}" class="btn btn-warning"><i class="fa fa-reply" aria-hidden="true"></i></a>
                         </td>
-                        <td>
-                            <form action="{{ route('message.destroy',$message->id) }}" method="POST">
-                                @csrf
-                                @method("DELETE")
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
-                        </td>
+                            <td>
+                                <form action="{{ route('message.trashDelete',$message->id) }}" method="POST">
+                                    @csrf
+                                    @method("DELETE")
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
                     </tr>        
 
                 @endforeach
 
             </tbody>
         </table>
-       {{ $messages->links() }}
     </div> <!-- card -->
 
     <div class="row">

@@ -1,14 +1,13 @@
 <div class="email-leftbar card">
     <a href="{{ route('message.create') }}" class="btn btn-danger btn-block waves-effect waves-light">
-        جدید
+        جدید <i class="fa fa-plus" aria-hidden="true"></i>
     </a>
     <div class="mail-list mt-4">
         <a href="{{ route('message.index') }}" class="active"><i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> صندوق ورودی
             <span class="ms-1 float-end">({{ Redis::zScore('messages',"messageCount:user:" . Auth::id()) }})</span></a>
-        <a href="javascript: void(0)" onclick="filterMessage('important')"><i class="mdi mdi-star-outline font-size-16 align-middle me-2"></i>مهم</a>
-        <a href="javascript: void(0)" onclick="filterMessage('notImportant')"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>پیش نویس</a>
+        <a href="javascript: void(0)"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>پیش نویس</a>
         <a href="#"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>ارسال شده</a>
-        <a href="#"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان</a>
+        <a href="{{ route('message.trash') }}"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان</a>
     </div>
 
 

@@ -41,8 +41,8 @@
             <p class="text-muted">{{ $user->meta ? $user->meta->ability : '' }}</p>
 
             <div class="mt-4">
-                <button type="button" class="btn btn-light btn-sm"><i class="uil uil-envelope-alt me-2"></i>
-                    ارسال پیام</button>
+                <a href="{{ route('message.create') }}" class="btn btn-light btn-sm"><i class="uil uil-envelope-alt me-2"></i>
+                    ارسال پیام</a>
             </div>
         </div>
 

@@ -168,7 +168,7 @@ class PostController extends Controller
     /* Restore the specified resource from storage. */
     public function restore($id)
     {
-        Post::onlyTrashed($id)->restore();
+        Post::onlyTrashed()->where('id',$id)->restore();
         return redirect()
             ->route('post.index')
             ->with(['message'=>"مطلب بازگردانی شد. #$id",'post_id'=>$id]);
@@ -195,7 +195,7 @@ class PostController extends Controller
     /* Force delete single resource from storage. */
     public function trashDelete($id)
     {
-        $post = Post::onlyTrashed($id)->first();
+        $post = Post::onlyTrashed()->where('id',$id)->first();
         if($post->image)
         {
             unlink($post->image->url);
@@ -210,7 +210,7 @@ class PostController extends Controller
     {
         foreach($request->ids as $id)
         {
-            $post = Post::onlyTrashed($id)->first();
+            $post = Post::onlyTrashed()->where('id',$id)->first();
             if($post->image)
             {
                 unlink($post->image->url);

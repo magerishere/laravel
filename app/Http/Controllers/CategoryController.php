@@ -157,7 +157,7 @@ class CategoryController extends Controller
     /* Trash delete resource from storage. */
     public function trashDelete($id)
     {
-        $category = Category::onlyTrashed($id)->first();
+        $category = Category::onlyTrashed()->where('id',$id)->first();
         $category->forceDelete();
         if(!$category->parent_id)
         {
@@ -176,7 +176,7 @@ class CategoryController extends Controller
     {
         foreach($request->ids as $id)
         {
-            $category = Category::onlyTrashed($id)->first();
+            $category = Category::onlyTrashed()->where('id',$id)->first();
             $category->forceDelete();
             if(!$category->parent_id)
             {
