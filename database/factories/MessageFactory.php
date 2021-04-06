@@ -23,7 +23,7 @@ class MessageFactory extends Factory
     {
         return [
             'from'=>rand(1,100),
-            'to'=>rand(1,2),
+            'to'=> [rand(1,100),rand(1,100),rand(1,100)],
             'body' => $this->faker->sentence(),
         ];
     }

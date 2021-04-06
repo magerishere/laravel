@@ -11,8 +11,15 @@ class Message extends Model
     use HasFactory,SoftDeletes;
     protected $fillable = ['from','to','body'];
 
+    protected $casts = ['to'=>'array'];
+    
     public function user() 
     {
         return $this->belongsTo(User::class,'from');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(User::class,'to');
     }
 }

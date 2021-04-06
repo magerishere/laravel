@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MessageRequest;
+use App\Jobs\MessageSenderJob;
 use App\Models\Image;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Session;
 
@@ -40,7 +42,7 @@ class MessageController extends Controller
         $messages = Message::orderByDesc('created_at')->where('to',$userId)->whereHas('User',function($query) {
             $query->where('name','like','%' . $this->search . '%');
         })->paginate($this->value);
-        Redis::zAdd('messages',$messages->total(),"messageCount:user:$userId");
+        if($this->search == '') Redis::zAdd('messages',$messages->total(),"messageCount:user:$userId");
         $messages->withPath('/message?search=' . $this->search . '&value=' . $this->value);
         return view('user.message.index',compact('messages'));
     }
@@ -64,14 +66,14 @@ class MessageController extends Controller
     public function store(MessageRequest $request)
     {
         $userId = Auth::id();
-        $message = Message::create([
+        Message::create([
             'from' => $userId,
             'to' => $request->input('id'),
             'body'=>$request->input('body')
         ]);
-     
         return back()
             ->with('message','ارسال شد!');
+        
     }
 
     /**
@@ -82,8 +84,10 @@ class MessageController extends Controller
      */
     public function show(Message $message)
     {
-        if(!Redis::zScore('messages',"message:$message->id:read")) {
-            Redis::zAdd('messages',1,"message:$message->id:read");
+
+        $userId = Auth::id();
+        if(!Redis::zScore('messages',"message:$message->id:read:$userId")) {
+            Redis::zAdd('messages',1,"message:$message->id:read:$userId");
         }
         return view('user.message.show',compact('message'));
     }
@@ -96,7 +100,7 @@ class MessageController extends Controller
      */
     public function edit(Message $message)
     {
-        //
+        return view('user.message.edit',compact('message'));
     }
 
     /**
@@ -106,9 +110,11 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Message $message)
+    public function update(MessageRequest $request, Message $message)
     {
-        //
+        $message->update($request->all());
+        return back()
+            ->with('message','پیام شما ویرایش شد!');
     }
 
     /**
@@ -173,26 +179,32 @@ class MessageController extends Controller
     public function multiSend(MessageRequest $request)
     {
         $userId = Auth::id();
-        foreach($request->ids as $id) 
-        {
-            Message::create([
-                'from' => $userId,
-                'to' => $id,
-                'body' => $request->body,
-            ]);
+        if($request->timer == 0) {
+                Message::create([
+                    'from' => $userId,
+                    'to' => $request->names,
+                    'body' => $request->body,
+                    ]);
+            
+            Session::flash('message','پیام شما ارسال شد!');
+        } else {
+            MessageSenderJob::dispatch($userId,$request->names,$request->body)
+            ->delay(now()->addHours($request->timer));
+            Session::flash('message','پیام شما در بازه زمانی مشخص ارسال میشود!');
         }
-        Session::flash('message','پیام شما ارسال شد!');
+
     }
 
 
     /* For update message to important/unimportant */
     public function important(Request $request)
     {
-        if(Redis::zScore('messages',"message:$request->id:important")) 
+        $userId = Auth::id();
+        if(Redis::zScore('messages',"message:$request->id:important:$userId")) 
         {
-            Redis::zRem('messages',"message:$request->id:important");
+            Redis::zRem('messages',"message:$request->id:important:$userId");
         } else {
-            Redis::zAdd('messages',1,"message:$request->id:important");
+            Redis::zAdd('messages',1,"message:$request->id:important:$userId");
         }
         return response()->json(['status'=>200]);
     }

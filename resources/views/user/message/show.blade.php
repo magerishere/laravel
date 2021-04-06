@@ -33,32 +33,7 @@
 
     <div class="card">
         <div class="btn-toolbar p-3" role="toolbar">
-            <div class="btn-group me-2 mb-2 mb-sm-0">
-                <button type="button" class="btn btn-primary waves-light waves-effect"><i class="fa fa-inbox"></i></button>
-                <button type="button" class="btn btn-primary waves-light waves-effect"><i class="fa fa-exclamation-circle"></i></button>
-                <button type="button" class="btn btn-primary waves-light waves-effect"><i class="far fa-trash-alt"></i></button>
-            </div>
-            <div class="btn-group me-2 mb-2 mb-sm-0">
-                <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-folder"></i> <i class="mdi mdi-chevron-down ms-1"></i>
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Updates</a>
-                    <a class="dropdown-item" href="#">Social</a>
-                    <a class="dropdown-item" href="#">Team Manage</a>
-                </div>
-            </div>
-            <div class="btn-group me-2 mb-2 mb-sm-0">
-                <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-tag"></i> <i class="mdi mdi-chevron-down ms-1"></i>
-                </button>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Updates</a>
-                    <a class="dropdown-item" href="#">Social</a>
-                    <a class="dropdown-item" href="#">Team Manage</a>
-                </div>
-            </div>
-
+        
             <div class="btn-group me-2 mb-2 mb-sm-0">
                 <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     More <i class="mdi mdi-dots-vertical ms-2"></i>
@@ -85,7 +60,7 @@
 
             <p>{!! $message->body !!}
             </p>
-           
+
             <hr>
 
             <div class="row">
@@ -106,14 +81,43 @@
                     </div>
                 </div>
             </div>
+            @if ($message->from == Auth::id())
+               
+                <div class="row">
+                    <div class="col-md-3">
+                        <h2>ارسال شده به</h2>
+                        <div class="row">
 
+                            @foreach ($message->to as $to)
+                            <div class="col-md-12 text-center">
+                                <div class="flex-1">
+                                    <h5 class="font-size-14 my-1">{{ $to }}</h5>
+                                    @if (Redis::zScore('messages',"message:" . Auth::id() . ":read:" . $to))
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                    @endif
+                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                   
+                </div>
+                
+                <div>
+                    
+                   
+                </div>`
+            @else
+                
             <form action="{{ route('message.store') }}" method="POST">
                 @csrf
                 <input type="hidden" name="id" value="{{ $message->from }}">
                 <textarea name="body" id="editor" cols="30" rows="10"></textarea>
-            
+                
                 <button type="submit" class="btn btn-secondary waves-effect mt-4"><i class="mdi mdi-reply"></i> ارسال پاسخ</button>
             </form>
+            @endif
         </div>
     </div>
 </div>

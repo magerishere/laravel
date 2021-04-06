@@ -23,6 +23,7 @@
     <!-- App Css-->
     <link href="{{ asset('assets/backend/css/app.rtl.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ asset('assets/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/loader.css') }}">
 
   
   </head>

@@ -78,8 +78,14 @@
                 @endif
             </ul>
         </nav>
+        
     </div>
-
+    
 @endif
+    <div class="row">
+        <div class="col-7">
+            نمایش {{ $paginator->firstItem() }} - {{ $paginator->lastItem() }} از {{ $paginator->total() }}
+        </div>
+    </div>
 
 

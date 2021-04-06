@@ -112,14 +112,16 @@
                             <input type="checkbox" name="checkBox[]" value="{{ $message->id }}" onclick="checkBoxHandler({{ $message->id }})">
                         </td>
                         <td>
-                            @if (Redis::zScore('messages',"message:$message->id:important"))
+                            @if (Redis::zScore('messages',"message:$message->id:important:" . Auth::id()))
                                 <a href="javascript: void(0)"><i data-value="{{ $message->id }}" class="fa fa-star"></i> </a>
                             @else
                                 <a href="javascript: void(0)"><i  data-value="{{ $message->id }}" class="fa fa-star-o"></i> </a>
                             @endif
                             @if ($message->created_at->isToday())
-                                @if (!Redis::zScore('messages',"message:$message->id:read"))
+                                @if (!Redis::zScore('messages',"message:$message->id:read:" . Auth::id()))
                                     <span class="text-danger"><small class="fa-new">جدید</small></span>
+                                @else
+                                    <span class="text-danger"><small class="fa-old"></small></span>
                                 @endif
                             @else   
                                 <span class="text-danger"><small class="fa-old"><small></span>
@@ -141,15 +143,13 @@
                         </td>
                         <td class="text-center align-middle">
 
-                            @if (Redis::zScore('messages',"message:$message->id:read"))
-                                <a href="{{ route('message.show',$message->id) }}">
-                                    <i class="fa fa-envelope-open-o" aria-hidden="true" style="font-size: 25px"></i>
-                                </a>
+                            <a href="{{ route('message.show',$message->id) }}" target="_blank">
+                            @if (Redis::zScore('messages',"message:$message->id:read:" . Auth::id()))
+                                <i class="fa fa-envelope-open-o" aria-hidden="true" style="font-size: 25px"></i>
                             @else
-                                <a href="{{ route('message.show',$message->id) }}">
-                                    <i class="fa fa-envelope" aria-hidden="true" style="font-size: 25px"></i>
-                                </a>
+                                <i class="fa fa-envelope" aria-hidden="true" style="font-size: 25px"></i>
                             @endif
+                                </a>
                         </td>
                         <td>
                             <form action="{{ route('message.destroy',$message->id) }}" method="POST">
@@ -169,17 +169,6 @@
        {{ $messages->links() }}
     </div> <!-- card -->
 
-    <div class="row">
-        <div class="col-7">
-            Showing 1 - 20 of 1,524
-        </div>
-        <div class="col-5">
-            <div class="btn-group float-end">
-                <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-left"></i></button>
-                <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-right"></i></button>
-            </div>
-        </div>
-    </div>
 @endif
 </div> <!-- end Col-9 -->
 
