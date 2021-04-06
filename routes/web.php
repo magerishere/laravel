@@ -41,9 +41,13 @@ Route::middleware('auth')->group(function() {
     Route::post('/category/multitrashdelete',[CategoryController::class,'multiTrashDelete'])->name('category.multiTrashDelete');
     Route::post('/category/multirestore',[CategoryController::class,'multiRestore'])->name('category.multiRestore');
     Route::post('/message/multidestroy',[MessageController::class,'multiDestroy'])->name('message.multiDestroy');
+    Route::post('/message/multitrashdelete',[MessageController::class,'multiTrashDelete'])->name('post.multiTrashDelete');
+    Route::post('/message/multirestore',[MessageController::class,'multiRestore'])->name('message.multiRestore');
+    Route::post('/message/multi/read',[MessageController::class,'multiRead'])->name('message.multiRead');
     Route::post('/message/multi/unread',[MessageController::class,'multiUnread'])->name('message.multiUnread');
     Route::post('/message/important',[MessageController::class,'important'])->name('message.important');
     Route::post('/message/multi/important',[MessageController::class,'multiImportant'])->name('message.multiImportant');
+    Route::post('/message/multi/notimportant',[MessageController::class,'multiNotImportant'])->name('message.multiNotImportant');
     Route::post('/message/search',[MessageController::class,'search'])->name('message.serach');
     Route::post('/message/get/image/user',[MessageController::class,'getImageUser'])->name('message.getImageUser');
     Route::post('/message/multi/send',[MessageController::class,'multiSend'])->name('message.multiSend');
@@ -58,6 +62,7 @@ Route::middleware('auth')->group(function() {
     Route::get('/category/restore/trash/{id}',[CategoryController::class,'restore'])->name('category.restore');
     Route::get('/category/all/trash',[CategoryController::class,'trash'])->name('category.trash');
     Route::get('/category/parent/{id}',[CategoryController::class,'parent'])->name('category.parent');
+    Route::get('/message/sended/inbox',[MessageController::class,'sended'])->name('message.sended'); // for sended message from user
     Route::get('/message/restore/trash/{id}',[MessageController::class,'restore'])->name('message.restore');
     Route::get('/message/all/trash',[MessageController::class,'trash'])->name('message.trash');
     Route::get('/dashboard',function(){

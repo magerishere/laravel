@@ -13,6 +13,22 @@ use Illuminate\Support\Facades\Session;
 
 class MessageController extends Controller
 {
+    private $value = 10;
+    private $search = '';
+
+    public function __construct()
+    {
+        /* Pagination handler */
+        if(isset($_GET['value']))
+        {
+            $this->value = $_GET['value'] > 100 ? 100 : $_GET['value'];
+        }
+        /* Search handler */
+        if(isset($_GET['search']))
+        {
+            $this->search = $_GET['search'];
+        }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,33 +36,12 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $value = 10;
-        $search = '';
-        /* Pagination handler */
-        if(isset($_GET['value']))
-        {
-            $value = $_GET['value'] > 100 ? 100 : $_GET['value'];
-        }
-
-       
-        /* Search handler */
-        if(isset($_GET['search']))
-        {
-            $search = $_GET['search'];
-        }
-
         $userId = Auth::id();
-        $messages = Message::orderByDesc('id')->where('to',$userId)->whereHas('User',function($query) {
-            $search = '';
-        /* Search handler */
-        if(isset($_GET['search']))
-        {
-            $search = $_GET['search'];
-        }
-            $query->where('name','like','%' . $search . '%');
-        })->paginate($value);
+        $messages = Message::orderByDesc('created_at')->where('to',$userId)->whereHas('User',function($query) {
+            $query->where('name','like','%' . $this->search . '%');
+        })->paginate($this->value);
         Redis::zAdd('messages',$messages->total(),"messageCount:user:$userId");
-        $messages->withPath('/message?search=' . $search . '&value=' . $value);
+        $messages->withPath('/message?search=' . $this->search . '&value=' . $this->value);
         return view('user.message.index',compact('messages'));
     }
 
@@ -139,6 +134,15 @@ class MessageController extends Controller
 
         Session::flash('error','پیام های انتخاب شده به زباله دان انتقال داده شدند!'); /* Session error for set background red! */     
     }
+
+    public function multiRead(Request $request)
+    {
+        foreach($request->ids as $id)
+        {
+            Redis::zAdd('messages',1,"message:$id:read");
+        }
+        Session::flash('message','پیام های انتخاب شده به خوانده شده تبدیل شدند!');   
+    }
     
     public function multiUnread(Request $request)
     {
@@ -202,13 +206,44 @@ class MessageController extends Controller
         Session::flash('message','پیام های انتخاب شده به پیام مهم تبدیل شدند!');
     }
 
+    public function multiNotImportant(Request $request)
+    {
+        foreach($request->ids as $id)
+        {
+            Redis::zRem('messages',"message:$id:important");
+        }
+        Session::flash('message','پیام های انتخاب شده به پیام غیرمهم تبدیل شدند!');
+    }
+
     public function trash() 
     {
-        
         $userId = Auth::id();
-        $messages = Message::where('to',$userId)->onlyTrashed()->get();
+        $messages = Message::orderByDesc('deleted_at')->onlyTrashed()->where('to',$userId)->whereHas('User',function($query) {
+            $query->where('name','like','%' . $this->search . '%');
+        })->paginate($this->value);
+        Redis::zAdd('messages',$messages->total(),"messageTrashCount:user:$userId");
+        $messages->withPath('/message/all/trash?search=' . $this->search . '&value=' . $this->value);
         return view('user.message.trash',compact('messages'));
+    }
 
+    public function trashDelete($id)
+    {
+        $message = Message::onlyTrashed()->where('id',$id)->first();
+        if(!$message) $message = Message::find($id);
+        $message->forceDelete();
+        Session::flash('error','پیام حذف شد!');
+    }
+
+
+    public function multiTrashDelete(Request $request)
+    {
+        foreach($request->ids as $id)
+        {
+            $message = Message::onlyTrashed()->where('id',$id)->first();
+            if(!$message) $message = Message::find($id);
+            $message->forceDelete();
+        }
+        Session::flash('error','پیام های انتخاب شده حذف شدند!'); 
     }
 
     public function restore($id) 
@@ -219,11 +254,21 @@ class MessageController extends Controller
             ->with('message','پیام بازگردانی شد!');
     }
 
-    public function trashDelete($id)
+    public function multiRestore(Request $request)
     {
-        $message = Message::onlyTrashed()->where('id',$id)->first();
-        $message->forceDelete();
-        return back()
-            ->with('error','پیام حذف شد!');
+        foreach($request->ids as $id)
+        {
+            $message = Message::onlyTrashed()->where('id',$id)->first();
+            $message->restore();
+        }
+        Session::flash('message','پیام های انتخاب شده بازگردانی شدند!');
+    }
+
+    public function sended()
+    {
+        $userId = Auth::id();
+        $messages = Message::orderByDesc('created_at')->where('from',$userId)->paginate($this->value);
+        Redis::zAdd('messages',$messages->total(),"messageSendedCount:user:$userId");
+        return view('user.message.sended',compact('messages'));
     }
 }

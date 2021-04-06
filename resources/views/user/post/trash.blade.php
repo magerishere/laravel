@@ -62,7 +62,7 @@
                                         </td>
                                         
                                         <td class="text-center align-middle"><a href="{{ route('post.restore',$post->id) }}" class="btn btn-warning"><i class="fa fa-reply" aria-hidden="true"></i></a></td>
-                                        <td class="text-center align-middle"><form action="{{ route('post.trashDelete',$post->id) }}" method="POST"> @csrf @method("DELETE") <button type="submit" class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button></form></td>
+                                        <td class="text-center align-middle"><button type="submit" class="btn btn-danger" onclick="destroy({{ $post->id }})"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
                                     </tr>
                                 @endforeach
                               
@@ -121,6 +121,33 @@
                 document.getElementById('multiDestroyBtn').disabled = true;
                 document.getElementById('multiRestoreBtn').disabled = true;
             }
+        }
+
+        const destroy = (id) => {
+            Swal.fire({
+                    title: 'پس از حذف قادر به بازگردانی نیستید!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#808080',
+                    confirmButtonText: 'حذف!',
+                    cancelButtonText: 'انصراف',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: `/post/trash/${id}`,
+                                type: 'DELETE',
+                                success:function(res) {
+                                    location.reload();
+                                },
+                                error:function(e) {
+
+                                    document.getElementById('multiDestroyMessage').style.display = 'block';
+                
+                                }
+                            });
+                        }
+                    });
         }
 
         const multiDestroy = () => {

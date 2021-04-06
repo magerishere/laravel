@@ -13,6 +13,23 @@ use Illuminate\Support\Facades\Session;
 
 class PostController extends Controller
 {
+ 
+    private $value = 10;
+    private $search = '';
+
+    public function __construct()
+    {
+        /* Pagination handler */
+        if(isset($_GET['value']))
+        {
+            $this->value = $_GET['value'] > 100 ? 100 : $_GET['value'];
+        }
+        /* Search handler */
+        if(isset($_GET['search']))
+        {
+            $this->search = $_GET['search'];
+        }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -20,23 +37,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $value = 10;
-        $search = '';
-        /* Pagination handler */
-        if(isset($_GET['value']))
-        {
-            $value = $_GET['value'] > 100 ? 100 : $_GET['value'];
-        }
-
-        /* Search handler */
-        if(isset($_GET['search']))
-        {
-            $search = $_GET['search'];
-        }
-
-        $posts = Post::orderByDesc('id')->where('title','like','%' . $search . '%')->paginate($value);
-        $posts->withPath('/post?search=' . $search . '&value=' . $value); 
-        
+        $posts = Post::orderByDesc('created_at')->where('title','like','%' . $this->search . '%')->paginate($this->value);
+        $posts->withPath('/post?search=' . $this->search . '&value=' . $this->value); 
         return view('user.post.index',compact('posts'));    
     }
 
@@ -168,6 +170,7 @@ class PostController extends Controller
     /* Restore the specified resource from storage. */
     public function restore($id)
     {
+
         Post::onlyTrashed()->where('id',$id)->restore();
         return redirect()
             ->route('post.index')
@@ -178,7 +181,7 @@ class PostController extends Controller
     {
         foreach($request->ids as $id)
         {
-            $post = Post::onlyTrashed($id)->first();
+            $post = Post::onlyTrashed()->where('id',$id)->first();
             $post->restore();
         }
         Session::flash('message','مطالب انتخاب شده بازگردانی شدند!');
@@ -187,8 +190,8 @@ class PostController extends Controller
     /* Trash for all soft delete resource from storage. */
     public function trash()
     {
-        
-        $posts = Post::onlyTrashed()->get();
+        $posts = Post::orderByDesc('deleted_at')->onlyTrashed()->where('title','like','%' . $this->search . '%')->paginate($this->value);
+        $posts->withPath('/post?search=' . $this->search . '&value=' . $this->value); 
         return view('user.post.trash',compact('posts'));
     }
 

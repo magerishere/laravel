@@ -1,4 +1,3 @@
-@if ($paginator->hasPages())
 <div class="col-md-2 mt-5">
     <select id="numberOfPerPage" onchange="numberOfPerPageHandler()" class="custom-select custom-select-sm form-control form-control-sm form-select form-select-sm">
                 @if (request()->get('value'))
@@ -33,6 +32,7 @@
                 @endswitch
     </select> 
 </div>
+@if ($paginator->hasPages())
     <div class="col-md-10">
         <nav class="mt-5">
             <ul class="pagination justify-content-center">

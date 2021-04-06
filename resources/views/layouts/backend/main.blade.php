@@ -575,7 +575,7 @@
                 <ul class="sub-menu" aria-expanded="false">
                   <li><a href="{{ route('message.index') }}">نمایش همه</a></li>
                   <li><a href="{{ route('message.create') }}">جدید</a></li>
-                  <li><a href="{{ route('category.trash') }}">زباله دان</a></li>
+                  <li><a href="{{ route('message.trash') }}">زباله دان</a></li>
                   <li><a href="ecommerce-orders">Orders</a></li>
                   <li><a href="ecommerce-customers">Customers</a></li>
                   <li><a href="ecommerce-cart">Cart</a></li>

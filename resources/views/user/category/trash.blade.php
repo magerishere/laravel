@@ -69,7 +69,7 @@
                                             </div>
                                         </td>
                                         <td class="text-center align-middle"><a href="{{ route('category.restore',$category->id) }}"><button type="button" class="btn btn-warning"><i class="fa fa-reply" aria-hidden="true"></i></button></a></td>
-                                        <td class="text-center align-middle"> <form action="{{ route('category.trashDelete',$category->id) }}" method="POST"> @csrf @method("DELETE") <button class="btn btn-danger"><i class="fa fa-trash-o" aria-hidden="true"></i></button> </form></td>
+                                        <td class="text-center align-middle"> <button class="btn btn-danger" onclick="destroy({{ $category->id }})"><i class="fa fa-trash-o" aria-hidden="true"></i></button></td>
                                         
                                     </tr>
                                 @endforeach
@@ -134,9 +134,34 @@
             }
         }
 
+        const destroy = (id) => {
+            Swal.fire({
+                    title: 'پس از حذف قادر به بازگردانی نیستید!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#808080',
+                    confirmButtonText: 'حذف!',
+                    cancelButtonText: 'انصراف',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: `/category/trash/${id}`,
+                                type: 'DELETE',
+                                success:function(res) {
+                                    location.reload();
+                                },
+                                error:function(e) {
+
+                                    document.getElementById('multiDestroyMessage').style.display = 'block';
+                
+                                }
+                            });
+                        }
+                    });
+        }
+
         const multiDestroy = () => {
-            
-    
                 if(ids.length > 0) 
                 {
 

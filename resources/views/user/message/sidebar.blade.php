@@ -4,10 +4,12 @@
     </a>
     <div class="mail-list mt-4">
         <a href="{{ route('message.index') }}" class="active"><i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> صندوق ورودی
-            <span class="ms-1 float-end">({{ Redis::zScore('messages',"messageCount:user:" . Auth::id()) }})</span></a>
+            <span class="ms-1 float-end">({{ Redis::zScore('messages',"messageCount:user:" . Auth::id()) ?: 0 }})</span></a>
         <a href="javascript: void(0)"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>پیش نویس</a>
-        <a href="#"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>ارسال شده</a>
-        <a href="{{ route('message.trash') }}"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان</a>
+        <a href="{{ route('message.sended') }}"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>ارسال شده
+            <span class="ms-1 float-end">({{ Redis::zScore('messages',"messageSendedCount:user:" . Auth::id()) ?: 0 }})</span></a>
+        <a href="{{ route('message.trash') }}"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>زباله دان 
+            <span class="ms-1 float-end">({{ Redis::zScore('messages',"messageTrashCount:user:" . Auth::id()) ?: 0 }})</span></a>
     </div>
 
 

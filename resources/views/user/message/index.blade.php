@@ -33,16 +33,24 @@
 
     <div class="card">
         <div class="row">
+            @if ($messages->count() == 0)
+                <h3 class="text-center p-5">شما هیچ پیامی ندارید!</h3>
+            @else
 
-            <div class="btn-toolbar p-3 col-md-2" role="toolbar">
-                <div class="btn-group me-2 mb-2 mb-sm-0">
+            <div class="col-md-2">
+
+                <div class="btn-toolbar p-3" role="toolbar">
+                    <div class="btn-group me-2 mb-2 mb-sm-0">
                         <button type="button" id="deleteAllSelectorBtn" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" disabled> 
-                        بیشتر <i class="mdi mdi-dots-vertical ms-2"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#" onclick="multiUnread()">تبدیل به  پیام خوانده نشده <i class="fa fa-eye"></i></a>
-                        <a class="dropdown-item" href="#" onclick="multiImportant()">تبدیل به پیام مهم <i class="fa fa-star"></i></a>
-                        <a class="dropdown-item" href="#" onclick="deleteAllSelector()">انتقال به زباله دان <i class="fa fa-trash-o"></i></a>
+                            بیشتر <i class="mdi mdi-dots-vertical ms-2"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" onclick="multiRead()">تبدیل به  پیام خوانده شده <i class="fa fa-envelope-open-o"></i></a>
+                            <a class="dropdown-item" href="#" onclick="multiUnread()">تبدیل به  پیام خوانده نشده <i class="fa fa-envelope"></i></a>
+                            <a class="dropdown-item" href="#" onclick="multiImportant()">تبدیل به پیام مهم <i class="fa fa-star"></i></a>
+                            <a class="dropdown-item" href="#" onclick="multiNotImportant()">تبدیل به پیام غیر مهم <i class="fa fa-star-o"></i></a>
+                            <a class="dropdown-item" href="#" onclick="deleteAllSelector()">انتقال به زباله دان <i class="fa fa-trash-o"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,7 +68,6 @@
                             <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('seen')">فقط پیام های دیده شده <i class="fa fa-envelope-open-o"></i></a>
                             <a class="dropdown-item" href="javascript: void(0)" onclick="filterMessage('unseen')">فقط پیام های دیده نشده <i class="fa fa-envelope"></i></a>
                         </div>
-                        <div id="atLeastOneError"></div>
                     </div>
                 </div>
             </div>
@@ -113,9 +120,9 @@
                             @if ($message->created_at->isToday())
                                 @if (!Redis::zScore('messages',"message:$message->id:read"))
                                     <span class="text-danger"><small class="fa-new">جدید</small></span>
-                                @else   
-                                    <span class="text-danger"><small class="fa-old"><small></span>
                                 @endif
+                            @else   
+                                <span class="text-danger"><small class="fa-old"><small></span>
                             @endif
                         </td>
                         <td class="text-center align-middle">
@@ -123,7 +130,7 @@
                         
                         </td>
                         <td class="text-center align-middle">{{ $message->user->name }}</td>
-                        <td class="text-center align-middle">{!! Str::limit($message->body,30)  !!}</td>
+                        <td class="text-center align-middle">{!! Str::limit($message->body,25)  !!}</td>
                         <td class="text-center align-middle">
                             <div class="currentDate" style="display: none">
                                 {{ \Morilog\Jalali\Jalalian::fromCarbon($message->created_at)->format('Y/m/d') }}
@@ -173,7 +180,7 @@
             </div>
         </div>
     </div>
-
+@endif
 </div> <!-- end Col-9 -->
 
 </div>
@@ -343,6 +350,19 @@
            
         }
 
+        const multiRead = () => {
+            $.ajax({
+                url: '/message/multi/read',
+                type:'post',
+                data:{ids},
+                success:function(res) {
+                    location.reload();
+                },error:function(res) {
+                    document.getElementById('atLeastOneError').innerHTML = "<h5 class='text-danger'>خطا! دوباره تلاش کنید</h5>";
+                },
+            });
+        }
+
         const multiUnread = () => {
             $.ajax({
                 url: '/message/multi/unread',
@@ -370,6 +390,19 @@
             });
         }
 
+        const multiNotImportant = () => {
+            $.ajax({
+                url: '/message/multi/notimportant',
+                type:'post',
+                data:{ids},
+                success:function(res) {
+                    location.reload();
+                },error:function(res) {
+                    document.getElementById('atLeastOneError').innerHTML = "<h5 class='text-danger'>خطا! دوباره تلاش کنید</h5>";
+                },
+            });
+        }
+
         const filterMessage = (value) => {
             // font awesome icons
             let faStar = $('.fa-star');
@@ -378,6 +411,8 @@
             let faEnvelopeOpen = $('.fa-envelope-open-o');
             let faNew = $('.fa-new');
             let faOld = $('.fa-old');
+            console.log(faNew.length);
+            console.log(faOld.length);
             let oldFilter;
             let newFilter;
             // Filter just show important message and hide not important message!

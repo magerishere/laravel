@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Session;
 
 class CategoryController extends Controller
 {
+    private $value = 10;
+    private $search = '';
+
+    public function __construct()
+    {
+        /* Pagination handler */
+        if(isset($_GET['value']))
+        {
+            $this->value = $_GET['value'] > 100 ? 100 : $_GET['value'];
+        }
+        /* Search handler */
+        if(isset($_GET['search']))
+        {
+            $this->search = $_GET['search'];
+        }    
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,23 +32,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $value = 10;
-        $search = '';
-        /* Pagination handler */
-        if(isset($_GET['value']))
-        {
-            $value = $_GET['value'] > 100 ? 100 : $_GET['value'];
-        }
-
-        /* Search handler */
-        if(isset($_GET['search']))
-        {
-            $search = $_GET['search'];
-        }
-
-        $categories = Category::orderByDesc('id')->where('name','like','%' . $search . '%')->whereNull('parent_id')->paginate($value);
-        $categories->withPath('/category?search=' . $search . '&value=' . $value); 
-       
+        $categories = Category::orderByDesc('created_at')->where('name','like','%' . $this->search . '%')->whereNull('parent_id')->paginate($this->value);
+        $categories->withPath('/category?search=' . $this->search . '&value=' . $this->value); 
         return view('user.category.index',compact('categories'));
     }
 
@@ -140,7 +141,7 @@ class CategoryController extends Controller
       {
           foreach($request->ids as $id)
           {
-              $category = Category::onlyTrashed($id)->first();
+              $category = Category::onlyTrashed()->where('id',$id)->first();
               $category->restore();
           }
           Session::flash('message','مطالب انتخاب شده بازگردانی شدند!');
@@ -150,7 +151,8 @@ class CategoryController extends Controller
     /* Show trash resource from storage. */
     public function trash()
     {
-        $categories = Category::onlyTrashed()->get();
+        $categories = Category::orderByDesc('deleted_at')->onlyTrashed()->where('name','like','%' . $this->search . '%')->whereNull('parent_id')->paginate($this->value);
+        $categories->withPath('/category?search=' . $this->search . '&value=' . $this->value); 
         return view('user.category.trash',compact('categories'));
     }
 
